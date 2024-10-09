@@ -14,7 +14,7 @@ public class MigrationGenerator(Type modelType)
         var migrationCode = $$"""
                               using Autodesk.Revit.DB.ExtensibleStorage;
                               using SchemaMigrator.Database.Schemas;
-                              using SchemaMigrator.Database.Core.Models;
+                              using SchemaMigrations.Abstractions.Models;
 
                               namespace {{_projectName}}.Migrations;
                               public class {{migrationName}}_{{DateTime.Now:yyyyMMdd_hhmm}} : Migration
