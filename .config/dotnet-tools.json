@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "consoleapp2": {
+      "version": "1.0.4",
+      "commands": [
+        "mytool"
+      ],
+      "rollForward": false
+    }
+  }
+}
