@@ -1,8 +1,7 @@
-using System.IO;
-using System.Reflection;
 using System.Text;
+using ConsoleMigrationTool.MigrationTool;
 
-namespace ConsoleMigrationTool.MigrationTool;
+namespace ConsoleApp2.MigrationTool;
 
 public class MigrationGenerator(Type modelType)
 {

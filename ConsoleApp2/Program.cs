@@ -20,7 +20,7 @@ namespace ConsoleApp2
             try
             {
                 Console.WriteLine($"Adding migration: {migration}");
-                ConsoleMigrationTool.MigrationTool.MigrationTool.AddMigration(migration, projectPath);
+                MigrationTool.MigrationTool.AddMigration(migration, projectPath);
             }
             catch (Exception e)
             {

@@ -1,4 +1,6 @@
-namespace ConsoleMigrationTool.Models;
+using System;
+
+namespace SchemaMigrations.Abstractions.Models;
 
 public class FieldDescriptor(string name, Type type)
 {

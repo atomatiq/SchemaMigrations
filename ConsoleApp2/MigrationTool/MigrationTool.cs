@@ -1,8 +1,7 @@
-using System.IO;
 using System.Reflection;
-using ConsoleMigrationTool.Models;
+using SchemaMigrations.Abstractions.Models;
 
-namespace ConsoleMigrationTool.MigrationTool;
+namespace ConsoleApp2.MigrationTool;
 
 public class MigrationTool
 {

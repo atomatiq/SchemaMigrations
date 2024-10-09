@@ -1,4 +1,8 @@
-namespace ConsoleMigrationTool.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace SchemaMigrations.Abstractions.Models;
 
 public class SchemaDescriptor(string schemaName)
 {
