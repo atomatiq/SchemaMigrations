@@ -9,7 +9,6 @@ public class MigrationTool
     public static void AddMigration(string migrationName, string projectPath)
     {
         var projectDir = projectPath.Split('\\').Last();
-        Console.WriteLine(projectDir);
         var dllPath = string.Empty;
         foreach (var dir in Directory.GetDirectories(projectPath, $"*", searchOption: SearchOption.AllDirectories))
         {
@@ -19,18 +18,20 @@ public class MigrationTool
             dllPath = dlls.First();
             break;
         }
-        //Console.WriteLine(dllPath);
-        
-        
         
         var assembly = Assembly.LoadFile(dllPath);
-        var types = FindModelTypes(projectDir, assembly);
-        if (types.Count == 0) return;
-        var snapshots = GetLastMigrationsSnapshot(types.Keys.ToArray(), assembly);
-        var generator = new MigrationGenerator(types.Values.ElementAt(0));
-        for (var i = 0; i < types.Count; i++)
+        var modelTypes = FindModelTypes(assembly);
+        if (modelTypes.Count == 0)
         {
-            var pair = types.ElementAt(i);
+            Console.WriteLine("No model types found in your SchemaContext class. No migrations will be added");
+            return;
+        }
+        
+        var snapshots = GetLastMigrationsSnapshot(modelTypes.Keys.ToArray(), assembly);
+        var generator = new MigrationGenerator(modelTypes.Values.ElementAt(0));
+        for (var i = 0; i < modelTypes.Count; i++)
+        {
+            var pair = modelTypes.ElementAt(i);
             var schemaName = pair.Key;
             var type = pair.Value;
             var snapshot = snapshots.FirstOrDefault(snapshot => snapshot.SchemaName == schemaName);
@@ -41,14 +42,17 @@ public class MigrationTool
             else
             {
                 var changes = ChangeDetector.DetectChanges(type, schemaName, snapshot.Fields.ToDictionary(field => field.Name, field => field.Type));
-                if (changes.Any())
+                if (changes.Count > 0)
                 {
                     generator.AddMigration(schemaName, changes);
                 }
             }
         }
 
-        generator.Finish(migrationName);
+        if (generator.Finish(migrationName))
+        {
+            Console.WriteLine($"Migration {migrationName} created  successfully");
+        }
     }
 
     private static List<SchemaDescriptor> GetLastMigrationsSnapshot(string[] schemaNames, Assembly assembly)
@@ -90,7 +94,7 @@ public class MigrationTool
         return migrationTypes;
     }
 
-    private static Dictionary<string, Type> FindModelTypes(string projectName, Assembly assembly)
+    private static Dictionary<string, Type> FindModelTypes(Assembly assembly)
     {
         var types = assembly.GetTypes().Where(type => type.IsSubclassOf(typeof(SchemaContext))).ToArray();
         if (types.Length != 1)

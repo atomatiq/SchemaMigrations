@@ -4,11 +4,11 @@ namespace ConsoleApp2.MigrationTool;
 
 public class MigrationGenerator(Type modelType)
 {
-    private StringBuilder _upBuilder = new();
-    private StringBuilder _guidsBuilder = new();
+    private readonly StringBuilder _upBuilder = new();
+    private readonly StringBuilder _guidsBuilder = new();
     private readonly string _projectName = modelType.Namespace!.Remove(modelType.Namespace.LastIndexOf('.'));
 
-    public void Finish(string migrationName)
+    public bool Finish(string migrationName)
     {
         var migrationCode = $$"""
                               using Autodesk.Revit.DB.ExtensibleStorage;
@@ -28,7 +28,7 @@ public class MigrationGenerator(Type modelType)
                               }
                               """;
 
-        SaveFile(migrationName, migrationCode);
+        return SaveFile(migrationName, migrationCode);
     }
 
     public void AddInitialMigration(string schemaName, Type schemaSetType)
@@ -88,19 +88,30 @@ public class MigrationGenerator(Type modelType)
         _upBuilder.AppendLine();
     }
 
-    private void SaveFile(string migrationName, string migrationCode)
+    private bool SaveFile(string migrationName, string migrationCode)
     {
-        var solutionDirectory = PathUtils.GetSolutionDirectory(modelType.Assembly);
-        var projectDirectory = FindProjectDirectory(solutionDirectory, modelType.Name);
-        var migrationsFolderPath = Path.Combine(projectDirectory, "Migrations");
-
-        if (!Directory.Exists(migrationsFolderPath))
+        try
         {
-            Directory.CreateDirectory(migrationsFolderPath);
-        }
+            var solutionDirectory = PathUtils.GetSolutionDirectory(modelType.Assembly);
+            var projectDirectory = FindProjectDirectory(solutionDirectory, modelType.Name);
+            var migrationsFolderPath = Path.Combine(projectDirectory, "Migrations");
 
-        var filePath = Path.Combine(migrationsFolderPath, $"{DateTime.Now:yyyyMMdd_hhmm}_{migrationName}.cs");
-        File.WriteAllText(filePath, migrationCode);
+            if (!Directory.Exists(migrationsFolderPath))
+            {
+                Directory.CreateDirectory(migrationsFolderPath);
+            }
+
+            var filePath = Path.Combine(migrationsFolderPath, $"{DateTime.Now:yyyyMMdd_hhmm}_{migrationName}.cs");
+            File.WriteAllText(filePath, migrationCode);
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("An error occured while saving the migration file. Exception info:");
+            Console.WriteLine(e.Message);
+            Console.WriteLine(e.StackTrace);
+            return false;
+        }
     }
 
     private static string FindProjectDirectory(string solutionDirectory, string className)

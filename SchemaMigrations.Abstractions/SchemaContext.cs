@@ -1,5 +1,3 @@
 namespace SchemaMigrations.Abstractions;
 
-public class SchemaContext
-{
-}
+public abstract class SchemaContext;
