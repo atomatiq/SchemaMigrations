@@ -9,6 +9,17 @@
         <ToolCommandName>AddSchemaMigration</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <Version>1.0.11</Version>
+        <Configurations>Release R21;Generator Debug;Debug R21;Generator Release;Debug R22;Debug R23;Debug R24;Debug R25;Release R22;Release R23;Release R24;Release R25</Configurations>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release R21' ">
+      <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug R21' ">
+      <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">true</DebugSymbols>
+      <Optimize Condition=" '$(Optimize)' == '' ">false</Optimize>
     </PropertyGroup>
 
     <ItemGroup>
