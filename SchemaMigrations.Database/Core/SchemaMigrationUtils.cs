@@ -1,9 +1,8 @@
 using System.Reflection;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using SchemaMigrations.Abstractions;
-using SchemaMigrations.Abstractions.Models;
 
-namespace SchemaMigrator.Database.Core;
+namespace SchemaMigrations.Database.Core;
 
 public static class SchemaMigrationUtils
 {

@@ -1,8 +1,8 @@
 using Autodesk.Revit.DB.ExtensibleStorage;
 using SchemaMigrations.Abstractions;
-using SchemaMigrator.Database.Core;
+using SchemaMigrations.Database.Core;
 
-namespace SchemaMigrator.Database.Schemas;
+namespace SchemaMigrations.Database.Schemas;
 
 internal class Schema<T> where T : class
 {

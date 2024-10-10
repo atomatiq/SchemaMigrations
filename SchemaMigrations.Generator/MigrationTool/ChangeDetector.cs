@@ -1,4 +1,4 @@
-namespace ConsoleApp2.MigrationTool;
+namespace SchemaMigrations.Generator.MigrationTool;
 
 public static class ChangeDetector
 {

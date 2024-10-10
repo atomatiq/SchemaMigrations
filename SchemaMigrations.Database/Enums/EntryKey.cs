@@ -1,4 +1,4 @@
-namespace SchemaMigrator.Database.Enums;
+namespace SchemaMigrations.Database.Enums;
 
 public enum EntryKey
 {

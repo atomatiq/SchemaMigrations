@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp2", "ConsoleApp2\ConsoleApp2.csproj", "{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchemaMigrations.Generator", "SchemaMigrations.Generator\SchemaMigrations.Generator.csproj", "{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchemaMigrations.Abstractions", "SchemaMigrations.Abstractions\SchemaMigrations.Abstractions.csproj", "{2BE1FCDD-19BD-4DF5-9CBE-C95E17A2C054}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchemaMigrator.Database", "SchemaMigrator.Database\SchemaMigrator.Database.csproj", "{E2900D39-3F3C-453E-A7B0-6CB4E157DB1D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchemaMigrations.Database", "SchemaMigrations.Database\SchemaMigrations.Database.csproj", "{E2900D39-3F3C-453E-A7B0-6CB4E157DB1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -6,10 +6,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PackAsTool>true</PackAsTool>
-        <ToolCommandName>mytool</ToolCommandName>
+        <ToolCommandName>AddSchemaMigration</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
-        <IsTool>true</IsTool>
-        <Version>1.0.10</Version>
+        <Version>1.0.11</Version>
     </PropertyGroup>
 
     <ItemGroup>

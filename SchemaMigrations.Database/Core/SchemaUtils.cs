@@ -1,6 +1,6 @@
 using Autodesk.Revit.DB.ExtensibleStorage;
 
-namespace SchemaMigrator.Database.Core;
+namespace SchemaMigrations.Database.Core;
 
 public static class SchemaUtils
 {

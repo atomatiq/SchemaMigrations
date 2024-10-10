@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace ConsoleApp2.MigrationTool;
+namespace SchemaMigrations.Generator.MigrationTool;
 
 public static class PathUtils
 {

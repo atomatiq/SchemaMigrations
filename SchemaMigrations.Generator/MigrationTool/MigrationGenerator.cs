@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace ConsoleApp2.MigrationTool;
+namespace SchemaMigrations.Generator.MigrationTool;
 
 public class MigrationGenerator(Type modelType)
 {
@@ -17,7 +17,7 @@ public class MigrationGenerator(Type modelType)
         }
         var migrationCode = $$"""
                               using SchemaMigrations.Abstractions;
-                              using SchemaMigrator.Database.Schemas;
+                              using SchemaMigrations.Database.Schemas;
                               using SchemaMigrations.Abstractions.Models;
 
                               namespace {{_projectName}}.Migrations;

@@ -1,4 +1,4 @@
-namespace SchemaMigrator.Database;
+namespace SchemaMigrations.Database;
 
 public class ColumnsBuilder
 {

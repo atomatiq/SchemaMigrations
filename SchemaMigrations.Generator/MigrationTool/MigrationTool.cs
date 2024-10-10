@@ -2,7 +2,7 @@ using System.Reflection;
 using SchemaMigrations.Abstractions;
 using SchemaMigrations.Abstractions.Models;
 
-namespace ConsoleApp2.MigrationTool;
+namespace SchemaMigrations.Generator.MigrationTool;
 
 public class MigrationTool
 {

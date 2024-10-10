@@ -1,8 +1,8 @@
 using Autodesk.Revit.DB.ExtensibleStorage;
-using SchemaMigrator.Database.Core;
-using SchemaMigrator.Database.Schemas;
+using SchemaMigrations.Database.Core;
+using SchemaMigrations.Database.Schemas;
 
-namespace SchemaMigrator.Database;
+namespace SchemaMigrations.Database;
 
 public sealed class DatabaseConnection<T>(Element? element)
     where T : class, new()

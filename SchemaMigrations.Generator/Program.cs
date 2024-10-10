@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 using Cocona;
 
-namespace ConsoleApp2;
+namespace SchemaMigrations.Generator;
 
-internal class Program
+public class Program
 {
     public static void Main(string[] args)
     {
