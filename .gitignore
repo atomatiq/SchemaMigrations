@@ -1,5 +1,22 @@
-bin/
-obj/
+#IDE folders
+*.idea/
+*.vs/
+*.vscode/
+
+#Project-specific folders
+*obj/
+*bin/
+*temp/
+
+#Deprecated Nuget folder
 /packages/
-riderModule.iml
-/_ReSharper.Caches/
+
+#Nuke output folder
+/output/
+
+#Project-specific files
+*/build.schema.json
+*Secret*
+
+#User-specific files
+*.user
