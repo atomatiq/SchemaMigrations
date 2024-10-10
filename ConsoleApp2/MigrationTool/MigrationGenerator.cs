@@ -11,14 +11,14 @@ public class MigrationGenerator(Type modelType)
     public bool Finish(string migrationName)
     {
         var migrationCode = $$"""
-                              using Autodesk.Revit.DB.ExtensibleStorage;
+                              using SchemaMigrations.Abstractions;
                               using SchemaMigrator.Database.Schemas;
                               using SchemaMigrations.Abstractions.Models;
 
                               namespace {{_projectName}}.Migrations;
                               public class {{migrationName}}_{{DateTime.Now:yyyyMMdd_hhmm}} : Migration
                               {
-                                  public override Dictionary<string, Guid> GuidDictionary { get; set; } = new Dictionary<string, Guid>()
+                                  public override Dictionary<string, Guid> GuidDictionary { get; } = new Dictionary<string, Guid>()
                                   {
                               {{_guidsBuilder}}    };
                               

@@ -9,7 +9,7 @@
         <ToolCommandName>mytool</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <IsTool>true</IsTool>
-        <Version>1.0.8</Version>
+        <Version>1.0.10</Version>
     </PropertyGroup>
 
     <ItemGroup>
