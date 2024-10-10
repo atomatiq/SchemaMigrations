@@ -97,6 +97,11 @@ public sealed class DatabaseConnection<T>(Element? element)
         var obj = new T();
         var objType = typeof(T);
 
+        if (entity is null || !entity.IsValidObject || entity.Schema is null || !entity.Schema.IsValidObject)
+        {
+            return obj;
+        }
+
         var properties = objType.GetProperties();
         var method = typeof(Entity).GetMethods().FirstOrDefault(methodInfo =>
         {

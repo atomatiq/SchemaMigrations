@@ -1,25 +1,23 @@
-using System.Reflection;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using SchemaMigrations.Abstractions;
 using SchemaMigrator.Database.Core;
 
 namespace SchemaMigrator.Database.Schemas;
 
-public class Schema<T> where T : class
+internal class Schema<T> where T : class
 {
-    public Schema Create()
+    internal Schema Create()
     {
-        var contextType = typeof(SchemaContext);
-        var propertyInfos = contextType
+        var clientAssembly = typeof(T).Assembly;
+        var schemaContextType = clientAssembly.GetTypes().Single(type => type.IsSubclassOf(typeof(SchemaContext)));
+        var propertyInfos = schemaContextType
             .GetProperties()
             .Where(property => property.PropertyType.GetGenericTypeDefinition() == typeof(SchemaSet<>));
         var type = propertyInfos.First(info => info.PropertyType.GetGenericArguments()[0] == typeof(T));
         
         var schemaName = type.Name;
-        
-        var currentAssembly = Assembly.GetExecutingAssembly();
 
-        var migrationTypes = currentAssembly.GetTypes()
+        var migrationTypes = clientAssembly.GetTypes()
             .Where(assemblyType => assemblyType.IsClass && !assemblyType.IsAbstract && assemblyType.IsSubclassOf(typeof(Migration)))
             .OrderBy(migrationType =>
             {
@@ -66,14 +64,5 @@ public class Schema<T> where T : class
 
         var schemas = SchemaMigrationUtils.MigrateSchemas(lastExistedGuidDict, migrationBuilder);  //it will migrate all the schemas
         return schemas.Find(migratedSchema => migratedSchema.SchemaName == schemaName);
-    }
-
-    public void Delete()
-    {
-        // var schema = Schema.Lookup(new Guid(Guid));
-        // if (schema is not null)
-        // {
-        //     Context.ActiveDocument!.EraseSchemaAndAllEntities(schema);
-        // }
     }
 }
