@@ -10,6 +10,11 @@ public class MigrationGenerator(Type modelType)
 
     public bool Finish(string migrationName)
     {
+        if (_upBuilder.Length == 0 && _guidsBuilder.Length == 0)
+        {
+            Console.WriteLine($@"No changes found. Migration {migrationName} not added");
+            return false;
+        }
         var migrationCode = $$"""
                               using SchemaMigrations.Abstractions;
                               using SchemaMigrator.Database.Schemas;
