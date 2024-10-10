@@ -1,14 +1,15 @@
-## Make Revit API more flexible
+## Make your Revit Extensible Storage API experience comfortable 
 
 [![Nuget](https://img.shields.io/nuget/v/Nice3point.Revit.Toolkit?style=for-the-badge)](https://www.nuget.org/packages/Nice3point.Revit.Toolkit)
 [![Downloads](https://img.shields.io/nuget/dt/Nice3point.Revit.Toolkit?style=for-the-badge)](https://www.nuget.org/packages/Nice3point.Revit.Toolkit)
 [![Last Commit](https://img.shields.io/github/last-commit/Nice3point/RevitToolkit/develop?style=for-the-badge)](https://github.com/Nice3point/RevitToolkit/commits/develop)
 
-This library provides a modern interface for working with the Revit API.
-Package contains interfaces implementation frequently encountered in revit, aiming to provide as much flexibility as possible, so developers are free to choose which components to
-use.
+This library provides tools for making Revit Extensible Storage API similar to Entity Framework.
+Define you models, add them to SchemaContext. Run Schema Migration Generator to Create migration. Then save your models 
+in ES and load them from ES as an instances of your Models class, not only a primitive objects.
 
 ## Installation
+**TODO: Change references after publishing**
 
 You can install Toolkit as a [nuget package](https://www.nuget.org/packages/Nice3point.Revit.Toolkit).
 
@@ -22,7 +23,7 @@ Package included by default in [Revit Templates](https://github.com/Nice3point/R
 
 ## Table of contents
 
-* [ExternalCommand](#externalcommand)
+* [How to get started](#howtogetstarted)
 * [ExternalApplication](#externalapplication)
 * [ExternalDBApplication](#externaldbapplication)
 * [External events](#external-events)
@@ -49,66 +50,139 @@ Package included by default in [Revit Templates](https://github.com/Nice3point/R
 
 ## Features
 
-### ExternalCommand
+### How to get started
 
-Contains an implementation for **IExternalCommand**.
+Create a solution for your Revit Application. You can use Nice3Point [Revit Templates](https://github.com/Nice3point/RevitTemplates),
+but it is not mandatory.
 
-Override method **Execute()** to implement and external command within Revit.
-Data available when executing an external command is accessible by properties:
+You should create one project for you solution which will be responsible for working with Extensible Storage (next: Database project).
+Other project would have references on it if they need.
+
+Add reference to nuget-package SchemaMigrations.Database in Database project. You should use version of package according your Revit Version,
+or simply change your .csproj like this if you are using Nice3Point or similar template:
+```xml
+<PackageReference Include="SchemaMigrations.Database" Version="$(RevitVersion).*" />
+```
+
+1. Create Models folder and define your Model:
 
 ```c#
-[Transaction(TransactionMode.Manual)]
-public class Command : ExternalCommand
+public class Person
 {
-    public override void Execute()
-    {
-        var title = Document.Title;
-        var viewName = ActiveView.Name;
-        var username = Application.Username;
-        var selection = UiDocument.Selection;
-        var windowHandle = UiApplication.MainWindowHandle;
-    }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Surname { get; set; }
+    public string Occupation { get; set; }
+    public List<string> Hobbies { get; set; } = [];
+    public Dictionary<string, int> Scores { get; set; } = [];
 }
 ```
 
-**ExternalCommand** contains the logic for resolving dependencies.
-Now you may not encounter a `FileNotFoundException`. Dependencies are searched in the plugin folder.
+You can have maximum 256 properties in your model class. The supported property types are Boolean, Byte, Int16, Int32, Float, Double, ElementId, GUID, String, XYZ, UV and Entity.
 
-Starting with Revit 2025, **ExternalCommand** is executed in an isolated context, providing independent execution and preventing conflicts due to incompatible library versions.
-
-### ExternalApplication
-
-Contains an implementation for **IExternalApplication**.
-
-Override method **OnStartup()** to execute some tasks when Revit starts.
-
-Override method **OnShutdown()** to execute some tasks when Revit shuts down. You don't have to override this method if you don't plan to use it.
-
-Data available when executing an external application is accessible by properties:
-
+2. Create an implementation of SchemaContext class and add a SchemaSet<T> for every model class:
 ```c#
-public class Application : ExternalApplication
+public class ApplicationSchemaContext : SchemaContext
 {
-    public override void OnStartup()
-    {
-        var panel = Application.CreatePanel("Commands", "RevitAddin");
-        panel.AddPushButton<Command>("Execute");
-            .SetImage("/RevitAddin;component/Resources/Icons/RibbonIcon16.png");
-            .SetLargeImage("/RevitAddin;component/Resources/Icons/RibbonIcon32.png");
-    }
+    public SchemaSet<Person> Persons { get; set; } = [];
+}
+```
+3. Install SchemaMigrations.Generator tool globally:
+```powershell
+dotnet install SchemaMigrations.Generator --global
+```
+4. Open your terminal and make sure that you are in your Database project folder. Run 'cd Directory'
+to go to Directory. Run 'cd ..' to go to parent directory.
 
-    public override void OnShutdown()
+5. Run the following command in terminal:
+```powershell
+AddSchemaMigration InitialMigration ${PWD}
+```
+It will create a Migrations folder and a first migration class called "InitialMigration_{datetime_stamp}":
+```c#
+using SchemaMigrations.Abstractions;
+using SchemaMigrations.Database.Schemas;
+using SchemaMigrations.Abstractions.Models;
+
+namespace SchemaMigrationsExample.EntityCreator.Database.Migrations;
+public class InitialMigration_20241010_0301 : Migration
+{
+    public override Dictionary<string, Guid> GuidDictionary { get; } = new Dictionary<string, Guid>()
     {
-    }
+        { "Persons", new Guid("5c047012-e225-4c9f-b02a-dc7f2aebca5d") },
+    };
+
+    public override void Up(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.AddSchemaData(new SchemaBuilderData()
+        {
+            Guid = GuidDictionary["Persons"],
+            Documentation = "Initial schema for Person",
+            Name = "Persons",
+            VendorId = "Atomatiq"
+        },
+        new SchemaDescriptor("Persons")
+        {
+            Fields = new List<FieldDescriptor>()
+            {
+                new FieldDescriptor( "Id", typeof(Int32) ),
+                new FieldDescriptor( "Name", typeof(String) ),
+                new FieldDescriptor( "Surname", typeof(String) ),
+                new FieldDescriptor( "Occupation", typeof(String) ),
+                new FieldDescriptor( "Hobbies", typeof(List<String>) ),
+                new FieldDescriptor( "Scores", typeof(Dictionary<String, Int32>) )
+            }
+        });
+
+    }    
 }
 ```
 
-**ExternalApplication** contains the logic for resolving dependencies.
-Now you may not encounter a `FileNotFoundException`. Dependencies are searched in the plugin folder.
+Now you are all set to create your first schema.
 
-Starting with Revit 2025, **ExternalApplication** is executed in an isolated context, providing independent execution and preventing conflicts due to incompatible library versions.
+### Save data to schema and load data from schema
 
-### ExternalDBApplication
+Add reference to nuget-package SchemaMigrations.Database in Database project. You should use version of package according your Revit Version,
+or simply change your .csproj like this if you are using Nice3Point or similar template:
+```xml
+<PackageReference Include="SchemaMigrations.Database" Version="$(RevitVersion).*" />
+``` 
+
+Also, you will need a reference to your database project.
+
+For saving and loading data you always need an element. Considering you have one, right this code to save a Person object to it:
+```c#
+using var transaction = new Transaction(instance.Document, "Seeding database");
+transaction.Start();
+
+var connection = new DatabaseConnection<Person>(instance);
+var person = new Person
+{
+    Id = 69,
+    Name = "Mirko",
+    Surname = "Petrović",
+    Occupation = "Software development",
+    Scores = new Dictionary<string, int>
+    {
+        { "Scores", 1 }
+    },
+    Hobbies = ["Sports"]
+};
+connection.SaveObject(person);
+
+transaction.Commit();
+```
+
+That's it! Now your element contains entity of Person schema with 6 fields. 
+To load an object from this element, just use **LoadObject()**:
+```c#
+var connection = new DatabaseConnection<Person>(instance);
+var existedPerson = connection.LoadObject(); // connection is generic DatabaseConnection<Person>, so it will return correct type
+```
+
+### Add changes to your schema
+
+If you need 
 
 Contains an implementation for **IExternalDBApplication**.
 
