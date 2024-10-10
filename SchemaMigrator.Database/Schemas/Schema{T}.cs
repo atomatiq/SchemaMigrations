@@ -1,5 +1,7 @@
 using System.Reflection;
 using Autodesk.Revit.DB.ExtensibleStorage;
+using SchemaMigrations.Abstractions;
+using SchemaMigrator.Database.Core;
 
 namespace SchemaMigrator.Database.Schemas;
 
@@ -59,10 +61,10 @@ public class Schema<T> where T : class
         if (schema is not null) return schema;
         if (!lastExistedGuidDict.TryGetValue(schemaName, out _))
         {
-            return migrationBuilder.Create(schemaName);
+            return SchemaMigrationUtils.Create(schemaName, migrationBuilder);
         }
 
-        var schemas = migrationBuilder.Migrate(lastExistedGuidDict);  //it wi;; migrate all the schemas
+        var schemas = SchemaMigrationUtils.MigrateSchemas(lastExistedGuidDict, migrationBuilder);  //it will migrate all the schemas
         return schemas.Find(migratedSchema => migratedSchema.SchemaName == schemaName);
     }
 
@@ -73,39 +75,5 @@ public class Schema<T> where T : class
         // {
         //     Context.ActiveDocument!.EraseSchemaAndAllEntities(schema);
         // }
-    }
-
-    private static Schema BuildSchema(SchemaBuilder builder, Type type)
-    {
-        var properties = type.GetProperties();
-
-        foreach (var property in properties)
-        {
-            var propertyType = property.PropertyType;
-
-            if (propertyType.IsGenericType)
-            {
-                var genericTypeDefinition = propertyType.GetGenericTypeDefinition();
-
-                if (genericTypeDefinition == typeof(List<>))
-                {
-                    var elementType = propertyType.GetGenericArguments()[0];
-                    builder.AddArrayField(property.Name, elementType);
-                }
-                else if (genericTypeDefinition == typeof(Dictionary<,>))
-                {
-                    var genericArgs = propertyType.GetGenericArguments();
-                    var keyType = genericArgs[0];
-                    var valueType = genericArgs[1];
-                    builder.AddMapField(property.Name, keyType, valueType);
-                }
-            }
-            else
-            {
-                builder.AddSimpleField(property.Name, propertyType);
-            }
-        }
-
-        return builder.Finish();
     }
 }

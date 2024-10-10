@@ -1,11 +1,13 @@
 using System.Reflection;
 using Autodesk.Revit.DB.ExtensibleStorage;
+using SchemaMigrations.Abstractions;
+using SchemaMigrations.Abstractions.Models;
 
 namespace SchemaMigrator.Database.Core;
 
-public static class EntityMigrator
+public static class SchemaMigrationUtils
 {
-    public static void Migrate(Schema oldSchema, Schema newSchema)
+    private static void MigrateSchema(Schema oldSchema, Schema newSchema)
     {
         var instances = Context.ActiveDocument.EnumerateInstances<FamilyInstance>().ToArray();
         foreach (var instance in instances)
@@ -18,6 +20,63 @@ public static class EntityMigrator
         // }
 
         Context.ActiveDocument!.EraseSchemaAndAllEntities(oldSchema);
+    }
+    
+    public static List<Schema> MigrateSchemas(Dictionary<string, Guid> lastExistedGuids, MigrationBuilder migrationBuilder)
+    {
+        var result = new List<Schema>();
+        foreach (var guidPair in lastExistedGuids)
+        {
+            var existingSchema = Schema.Lookup(guidPair.Value);
+            var resultSchema = Create(guidPair.Key, migrationBuilder);
+            if (existingSchema is not null && SchemaUtils.HasElements(existingSchema, Context.ActiveDocument!))
+            {
+                MigrateSchema(existingSchema, resultSchema);
+            }
+            result.Add(resultSchema);
+        }
+        return result;
+    }
+
+    public static Schema Create(string schemaName, MigrationBuilder migrationBuilder)
+    {
+        var data = migrationBuilder.BuildersData.First(data => data.Name == schemaName);
+        var schemaDescriptor = migrationBuilder.Schemas.First(schema => schema.SchemaName == schemaName);
+        
+        var schemaBuilder = new SchemaBuilder(data.Guid)
+            .SetSchemaName(data.Name)
+            .SetDocumentation(data.Documentation)
+            .SetVendorId(data.VendorId);
+        
+        foreach (var field in schemaDescriptor.Fields)
+        {
+            var propertyType = field.Type;
+
+            if (propertyType.IsGenericType)
+            {
+                var genericTypeDefinition = propertyType.GetGenericTypeDefinition();
+
+                if (genericTypeDefinition == typeof(List<>))
+                {
+                    var elementType = propertyType.GetGenericArguments()[0]; 
+                    schemaBuilder.AddArrayField(field.Name, elementType);
+                }
+                else if (genericTypeDefinition == typeof(Dictionary<,>))
+                {
+                    var genericArgs = propertyType.GetGenericArguments();
+                    var keyType = genericArgs[0];   
+                    var valueType = genericArgs[1]; 
+                    schemaBuilder.AddMapField(field.Name, keyType, valueType);
+                }
+            }
+            else
+            {
+                schemaBuilder.AddSimpleField(field.Name, propertyType);
+            }
+        }
+
+        var resultSchema = schemaBuilder.Finish();
+        return resultSchema;
     }
 
     private static void MigrateElement(Element element, Schema oldSchema, Schema newSchema)

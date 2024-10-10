@@ -1,11 +1,10 @@
-using System.IO;
 using System.Reflection;
 
-namespace ConsoleMigrationTool.MigrationTool;
+namespace ConsoleApp2.MigrationTool;
 
 public static class PathUtils
 {
-    public static string GetSolutionDirectory(Assembly assembly)
+    public static string? GetSolutionDirectory(Assembly assembly)
     {
         var currentDir = new DirectoryInfo(Path.GetDirectoryName(assembly.Location)!);
 

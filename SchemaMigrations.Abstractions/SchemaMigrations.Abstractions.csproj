@@ -40,9 +40,14 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Migration.cs" />
+        <Compile Include="MigrationBuilder.cs" />
         <Compile Include="Models\FieldDescriptor.cs" />
         <Compile Include="Models\SchemaDescriptor.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
+        <Compile Include="SchemaBuilderData.cs" />
+        <Compile Include="SchemaContext.cs" />
+        <Compile Include="SchemaSet{T}.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,4 +1,5 @@
 using System.Reflection;
+using SchemaMigrations.Abstractions;
 using SchemaMigrations.Abstractions.Models;
 
 namespace ConsoleApp2.MigrationTool;
@@ -54,10 +55,9 @@ public class MigrationTool
     {
         var schemas = new List<SchemaDescriptor>();
         var migrationTypes = GetMigrationTypes(assembly);
-        if (!migrationTypes.Any()) return schemas;
-        var types = migrationTypes.First().BaseType!.Assembly.GetTypes();
-        var migrationBuilderType = migrationTypes.First().BaseType!.Assembly.GetTypes().First(type => type.Name == "MigrationBuilder");
-        var migrationBuilder = Activator.CreateInstance(migrationBuilderType);
+        if (migrationTypes.Length == 0) return schemas;
+        
+        var migrationBuilder = new MigrationBuilder();
         foreach (var migrationType in migrationTypes)
         {
             var migrationInstance = Activator.CreateInstance(migrationType);
@@ -65,10 +65,9 @@ public class MigrationTool
             method!.Invoke(migrationInstance, [migrationBuilder]);
             foreach (var name in schemaNames)
             {
-                var getColumnsMethod = migrationBuilderType.GetMethod("GetColumns");
                 var schemaDescriptor = new SchemaDescriptor(name)
                 {
-                    Fields = (List<FieldDescriptor>)getColumnsMethod!.Invoke(migrationBuilder, [name])
+                    Fields = migrationBuilder.GetColumns(name)
                 };
                 schemas.Add(schemaDescriptor);
             }
@@ -80,7 +79,7 @@ public class MigrationTool
     private static Type[] GetMigrationTypes(Assembly assembly)
     {
         var migrationTypes = assembly.ExportedTypes
-            .Where(type => type.IsClass && !type.IsAbstract && type.BaseType?.Name == "Migration")
+            .Where(type => type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(Migration)))
             .OrderBy(migrationType =>
             {
                 var className = migrationType.Name;
@@ -93,18 +92,17 @@ public class MigrationTool
 
     private static Dictionary<string, Type> FindModelTypes(string projectName, Assembly assembly)
     {
-        var type = assembly.GetType($"{projectName}.Database.ApplicationSchemaContext");
-        // var types = assembly.GetTypes().Where(type => type.Name.EndsWith("SchemaContext")).ToArray();
-        // if (types.Count() != 1)
-        // {
-        //     throw new ArgumentException("Project must contain exactly one SchemaContext.");
-        // }
+        var types = assembly.GetTypes().Where(type => type.IsSubclassOf(typeof(SchemaContext))).ToArray();
+        if (types.Length != 1)
+        {
+            throw new ArgumentException("Project must contain exactly one inheritor of SchemaContext.");
+        }
 
         var typesDictionary = new Dictionary<string, Type>();
-        var contextType = type;
+        var contextType = types[0];
         var propertyInfos = contextType
             .GetProperties()
-            .Where(property => property.PropertyType.GetGenericTypeDefinition().Name.StartsWith("SchemaSet"));
+            .Where(property => property.PropertyType.GetGenericTypeDefinition() == typeof(SchemaSet<>));
 
         foreach (var propertyInfo in propertyInfos)
         {

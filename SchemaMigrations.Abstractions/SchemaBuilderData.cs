@@ -1,4 +1,6 @@
-namespace SchemaMigrator.Database.Schemas;
+using System;
+
+namespace SchemaMigrations.Abstractions;
 
 public class SchemaBuilderData
 {
