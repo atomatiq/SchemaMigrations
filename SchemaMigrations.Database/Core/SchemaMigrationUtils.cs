@@ -7,24 +7,25 @@ using SchemaMigrations.Abstractions;
 
 namespace SchemaMigrations.Database.Core;
 
-public static class SchemaMigrationUtils
+internal static class SchemaMigrationUtils
 {
     private static void MigrateSchema(Schema oldSchema, Schema newSchema)
     {
-        var instances = Context.ActiveDocument.EnumerateInstances<FamilyInstance>().ToArray();
+        var instances = Context.ActiveDocument.EnumerateInstances().ToArray();
+        var types = Context.ActiveDocument.EnumerateTypes().ToArray();
         foreach (var instance in instances)
         {
             MigrateElement(instance, oldSchema, newSchema);
         }
-        // foreach (var type in types)
-        // {
-        //     MigrateElement(type, oldSchema, newSchema);
-        // }
+        foreach (var type in types)
+        {
+            MigrateElement(type, oldSchema, newSchema);
+        }
 
         Context.ActiveDocument!.EraseSchemaAndAllEntities(oldSchema);
     }
     
-    public static List<Schema> MigrateSchemas(Dictionary<string, Guid> lastExistedGuids, MigrationBuilder migrationBuilder)
+    internal static List<Schema> MigrateSchemas(Dictionary<string, Guid> lastExistedGuids, MigrationBuilder migrationBuilder)
     {
         var result = new List<Schema>();
         foreach (var guidPair in lastExistedGuids)
@@ -40,7 +41,7 @@ public static class SchemaMigrationUtils
         return result;
     }
 
-    public static Schema Create(string schemaName, MigrationBuilder migrationBuilder)
+    internal static Schema Create(string schemaName, MigrationBuilder migrationBuilder)
     {
         var data = migrationBuilder.BuildersData.First(data => data.Name == schemaName);
         var schemaDescriptor = migrationBuilder.Schemas.First(schema => schema.SchemaName == schemaName);

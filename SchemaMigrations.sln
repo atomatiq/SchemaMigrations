@@ -55,20 +55,6 @@ Global
 		{E2900D39-3F3C-453E-A7B0-6CB4E157DB1D}.Release R24|Any CPU.Build.0 = Release R24|Any CPU
 		{E2900D39-3F3C-453E-A7B0-6CB4E157DB1D}.Release R25|Any CPU.ActiveCfg = Release R25|Any CPU
 		{E2900D39-3F3C-453E-A7B0-6CB4E157DB1D}.Release R25|Any CPU.Build.0 = Release R25|Any CPU
-		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Release R21|Any CPU.ActiveCfg = Generator Release|Any CPU
-		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Generator Debug|Any CPU.ActiveCfg = Generator Debug|Any CPU
-		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Generator Debug|Any CPU.Build.0 = Generator Debug|Any CPU
-		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Debug R21|Any CPU.ActiveCfg = Generator Debug|Any CPU
-		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Generator Release|Any CPU.ActiveCfg = Generator Release|Any CPU
-		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Generator Release|Any CPU.Build.0 = Generator Release|Any CPU
-		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Debug R22|Any CPU.ActiveCfg = Generator Debug|Any CPU
-		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Debug R23|Any CPU.ActiveCfg = Generator Debug|Any CPU
-		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Debug R24|Any CPU.ActiveCfg = Generator Debug|Any CPU
-		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Debug R25|Any CPU.ActiveCfg = Generator Debug|Any CPU
-		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Release R22|Any CPU.ActiveCfg = Generator Release|Any CPU
-		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Release R23|Any CPU.ActiveCfg = Generator Release|Any CPU
-		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Release R24|Any CPU.ActiveCfg = Generator Release|Any CPU
-		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Release R25|Any CPU.ActiveCfg = Generator Release|Any CPU
 		{C1C13B1A-FB5E-424E-9A17-A95994B77E49}.Generator Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C1C13B1A-FB5E-424E-9A17-A95994B77E49}.Debug R21|Any CPU.ActiveCfg = Debug|Any CPU
 		{C1C13B1A-FB5E-424E-9A17-A95994B77E49}.Generator Release|Any CPU.ActiveCfg = Debug|Any CPU
@@ -105,5 +91,19 @@ Global
 		{2BE1FCDD-19BD-4DF5-9CBE-C95E17A2C054}.Release R24|Any CPU.Build.0 = Release|Any CPU
 		{2BE1FCDD-19BD-4DF5-9CBE-C95E17A2C054}.Release R25|Any CPU.ActiveCfg = Release|Any CPU
 		{2BE1FCDD-19BD-4DF5-9CBE-C95E17A2C054}.Release R25|Any CPU.Build.0 = Release|Any CPU
+		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Debug R21|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Debug R22|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Debug R23|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Debug R24|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Debug R25|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Generator Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Generator Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Generator Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Generator Release|Any CPU.Build.0 = Release|Any CPU
+		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Release R21|Any CPU.ActiveCfg = Release|Any CPU
+		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Release R22|Any CPU.ActiveCfg = Release|Any CPU
+		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Release R23|Any CPU.ActiveCfg = Release|Any CPU
+		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Release R24|Any CPU.ActiveCfg = Release|Any CPU
+		{0F80279C-8DA2-4642-91B3-6721FBDDB0D0}.Release R25|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 EndGlobal

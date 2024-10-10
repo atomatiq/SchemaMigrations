@@ -10,6 +10,7 @@ internal class Schema<T> where T : class
     {
         var clientAssembly = typeof(T).Assembly;
         var schemaContextType = clientAssembly.GetTypes().Single(type => type.IsSubclassOf(typeof(SchemaContext)));
+        
         var propertyInfos = schemaContextType
             .GetProperties()
             .Where(property => property.PropertyType.GetGenericTypeDefinition() == typeof(SchemaSet<>));
@@ -27,8 +28,8 @@ internal class Schema<T> where T : class
             .ToArray();
 
         var migrationBuilder = new MigrationBuilder();
-        var lastGuidDict = new Dictionary<string, Guid>();
-        var lastExistedGuidDict = new Dictionary<string, Guid>();
+        var lastGuidDictionary = new Dictionary<string, Guid>();
+        var lastExistedGuidDictionary = new Dictionary<string, Guid>();
 
         foreach (var migrationType in migrationTypes)
         {
@@ -41,28 +42,29 @@ internal class Schema<T> where T : class
             {
                 if (!migrationInstance.GuidDictionary.TryGetValue(pair.Key, out _))
                 {
-                    lastGuidDict.Add(pair.Key, pair.Value);
+                    lastGuidDictionary.Add(pair.Key, pair.Value);
                 }
                 else
                 {
-                    lastGuidDict[pair.Key] = pair.Value;
+                    lastGuidDictionary[pair.Key] = pair.Value;
                 }
 
                 if (Schema.Lookup(pair.Value) is not null)
                 {
-                    lastExistedGuidDict[pair.Key] = pair.Value;
+                    lastExistedGuidDictionary[pair.Key] = pair.Value;
                 }
             }
         }
 
-        var schema = Schema.Lookup(lastGuidDict[schemaName]);
+        var schema = Schema.Lookup(lastGuidDictionary[schemaName]);
         if (schema is not null) return schema;
-        if (!lastExistedGuidDict.TryGetValue(schemaName, out _))
+        
+        if (!lastExistedGuidDictionary.TryGetValue(schemaName, out _))
         {
             return SchemaMigrationUtils.Create(schemaName, migrationBuilder);
         }
 
-        var schemas = SchemaMigrationUtils.MigrateSchemas(lastExistedGuidDict, migrationBuilder);  //it will migrate all the schemas
+        var schemas = SchemaMigrationUtils.MigrateSchemas(lastExistedGuidDictionary, migrationBuilder);  //it will migrate all the schemas
         return schemas.Find(migratedSchema => migratedSchema.SchemaName == schemaName);
     }
 }

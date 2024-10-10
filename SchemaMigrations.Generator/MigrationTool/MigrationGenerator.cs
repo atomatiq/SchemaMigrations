@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 
 namespace SchemaMigrations.Generator.MigrationTool;
@@ -12,7 +13,7 @@ public class MigrationGenerator(Type modelType)
     {
         if (_upBuilder.Length == 0 && _guidsBuilder.Length == 0)
         {
-            Console.WriteLine($@"No changes found. Migration {migrationName} not added");
+            Console.WriteLine($"No changes found. Migration {migrationName} not added");
             return false;
         }
         var migrationCode = $$"""
@@ -39,7 +40,7 @@ public class MigrationGenerator(Type modelType)
     public void AddInitialMigration(string schemaName, Type schemaSetType)
     {
         var properties = schemaSetType.GetProperties()
-            .ToDictionary(prop => prop.Name, prop => prop.PropertyType);
+            .ToDictionary(property => property.Name, property => property.PropertyType);
 
         _guidsBuilder.Append($$"""
                                        { "{{schemaName}}", new Guid("{{Guid.NewGuid()}}") },
@@ -97,8 +98,7 @@ public class MigrationGenerator(Type modelType)
     {
         try
         {
-            var solutionDirectory = PathUtils.GetSolutionDirectory(modelType.Assembly);
-            var projectDirectory = FindProjectDirectory(solutionDirectory, modelType.Name);
+            var projectDirectory = FindProjectDirectory(modelType.Assembly, modelType.Name);
             var migrationsFolderPath = Path.Combine(projectDirectory, "Migrations");
 
             if (!Directory.Exists(migrationsFolderPath))
@@ -119,21 +119,20 @@ public class MigrationGenerator(Type modelType)
         }
     }
 
-    private static string FindProjectDirectory(string solutionDirectory, string className)
+    private static string FindProjectDirectory(Assembly assembly, string className)
     {
-        if (string.IsNullOrEmpty(solutionDirectory)) return string.Empty;
-
-        var directories = Directory.GetDirectories(solutionDirectory, "*", SearchOption.AllDirectories);
+        var currentDirectory =Path.GetDirectoryName(assembly.Location)!;
+        
+        var directories = Directory.GetDirectories(currentDirectory, "*", SearchOption.AllDirectories);
 
         foreach (var directory in directories)
         {
-            if (Directory.GetFiles(directory, "*.csproj").Any())
+            if (Directory.GetFiles(directory, "*.csproj").Length == 0) continue;
+            
+            var files = Directory.GetFiles(directory, "*.cs", SearchOption.AllDirectories);
+            if (files.Any(file => File.ReadAllText(file).Contains($"public class {className}")))
             {
-                var files = Directory.GetFiles(directory, "*.cs", SearchOption.AllDirectories);
-                if (files.Any(file => File.ReadAllText(file).Contains($"public class {className}")))
-                {
-                    return directory;
-                }
+                return directory;
             }
         }
 

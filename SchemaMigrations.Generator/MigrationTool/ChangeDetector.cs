@@ -6,7 +6,7 @@ public static class ChangeDetector
     {
         var changes = new List<string>();
         var currentProperties = newModelType.GetProperties()
-            .ToDictionary(prop => prop.Name, prop => prop.PropertyType);
+            .ToDictionary(property => property.Name, property => property.PropertyType);
 
         foreach (var pair in currentProperties)
         {
@@ -27,7 +27,8 @@ public static class ChangeDetector
             }
             else if (value != pair.Value)
             {
-                changes.Add($@"ModifyColumn(""{pair.Key}"", {pair.Value.Name}))");
+                // TODO: support type modification
+                //changes.Add($@"ModifyColumn(""{pair.Key}"", {pair.Value.Name}))");
             }
         }
 
@@ -35,7 +36,7 @@ public static class ChangeDetector
         {
             if (!currentProperties.ContainsKey(property))
             {
-                changes.Add($"DropColumn({property})");
+                changes.Add($"DropColumn(\"{schemaName}\", \"{property}\")");
             }
         }
 
