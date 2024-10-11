@@ -15,8 +15,18 @@ partial class Build
             foreach (var configuration in GlobBuildConfigurations())
                 DotNetPack(settings => settings
                     .SetConfiguration(configuration)
+                    .SetProject(Solution.SchemaMigrations_Abstractions)
                     .SetVersion(GetPackVersion(configuration))
-                    .SetOutputDirectory(ArtifactsDirectory)
+                    .SetOutputDirectory($"{ArtifactsDirectory}/SchemaMigrations.Abstractions")
+                    .SetVerbosity(DotNetVerbosity.minimal)
+                    .SetPackageReleaseNotes(CreateNugetChangelog()));
+            
+            foreach (var configuration in GlobBuildConfigurations())
+                DotNetPack(settings => settings
+                    .SetConfiguration(configuration)
+                    .SetProject(Solution.SchemaMigrations_Database)
+                    .SetVersion(GetPackVersion(configuration))
+                    .SetOutputDirectory($"{ArtifactsDirectory}/SchemaMigrations.Database")
                     .SetVerbosity(DotNetVerbosity.minimal)
                     .SetPackageReleaseNotes(CreateNugetChangelog()));
         });
@@ -53,6 +63,11 @@ partial class Build
             .Select(config => config.Remove(config.LastIndexOf('|')))
             .Where(config => Configurations.Any(wildcard => FileSystemName.MatchesSimpleExpression(wildcard, config)))
             .ToList();
+
+        foreach (var configuration in configurations)
+        {
+            Console.WriteLine(configuration);
+        }
 
         Assert.NotEmpty(configurations, $"No solution configurations have been found. Pattern: {string.Join(" | ", Configurations)}");
         return configurations;
