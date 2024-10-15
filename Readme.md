@@ -77,7 +77,11 @@ to go to Directory. Run 'cd ..' to go to parent directory.
 ```powershell
 AddSchemaMigration InitialMigration
 ```
-It will build your solution to affect all the changes and create a Migrations folder and a first migration class called "InitialMigration_{datetime_stamp}":
+This command will build your solution to affect all the changes and after that start adding a migration. If you do not want to build, add '--no-build' flag:
+```powershell
+AddSchemaMigration InitialMigration --no-build
+```
+The command will create a Migrations folder (if needed) and a first migration class called "InitialMigration_{datetime_stamp}":
 ```c#
 using SchemaMigrations.Abstractions;
 using SchemaMigrations.Database.Schemas;
