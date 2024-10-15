@@ -15,7 +15,7 @@ partial class Build
                 DotNetPack(settings => settings
                     .SetConfiguration("Release R25")
                     .SetProject(Solution.SchemaMigrations_Abstractions)
-                    .SetVersion("1.1.0")
+                    .SetVersion(AbstractionVersion)
                     .SetOutputDirectory($"{ArtifactsDirectory}/SchemaMigrations.Abstractions")
                     .SetVerbosity(DotNetVerbosity.minimal)
                     .SetPackageReleaseNotes(CreateNugetChangelog()));
@@ -32,7 +32,7 @@ partial class Build
             DotNetPack(settings => settings
                 .SetConfiguration("Generator Release")
                 .SetProject(Solution.SchemaMigrations_Generator)
-                .SetVersion("1.1.9")
+                .SetVersion(GeneratorVersion)
                 .SetOutputDirectory($"{ArtifactsDirectory}/SchemaMigrations.Generator")
                 .SetVerbosity(DotNetVerbosity.minimal));
 

@@ -9,4 +9,16 @@
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <PackageType>Dependency</PackageType>
+        <PackageId>Atomatiq.SchemaMigrations.Abstractions</PackageId>
+        <Authors>Atomatiq</Authors>
+        <Description>Abstractions for SchemaMigrations.Database and SchemaMigrations.Generator</Description>
+        <PackageTags>revit;schema</PackageTags>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/atomatiq/SchemaMigrations</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/atomatiq/SchemaMigrations</PackageProjectUrl>
+<!--        <PackageIcon>images\PackageIcon.png</PackageIcon>-->
+    </PropertyGroup>
+
 </Project>

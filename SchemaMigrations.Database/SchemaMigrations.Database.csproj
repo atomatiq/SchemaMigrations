@@ -10,6 +10,17 @@
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <PackageType>Dependency</PackageType>
+        <PackageId>Atomatiq.SchemaMigrations.Database</PackageId>
+        <Authors>Atomatiq</Authors>
+        <Description>A tool for comfortable work with extensible Storage in Revit API</Description>
+        <PackageTags>revit;schema</PackageTags>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/atomatiq/SchemaMigrations</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/atomatiq/SchemaMigrations</PackageProjectUrl>
+    </PropertyGroup>
+
     <PropertyGroup Condition="$(Configuration.Contains('R21'))">
         <RevitVersion>2021</RevitVersion>
         <TargetFramework>net48</TargetFramework>
@@ -42,7 +53,7 @@
     <ItemGroup>
         <PackageReference Include="Nice3point.Revit.Api.RevitAPI" Version="$(RevitVersion).*"/>
         <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" Version="$(RevitVersion).*"/>
-        <PackageReference Include="SchemaMigrations.Abstractions" Version="1.*" />
+        <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="1.*" />
     </ItemGroup>
 
 </Project>

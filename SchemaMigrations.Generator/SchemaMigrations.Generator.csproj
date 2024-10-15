@@ -6,20 +6,29 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PackAsTool>true</PackAsTool>
-        <ToolCommandName>AddSchemaMigration</ToolCommandName>
-        <PackageOutputPath>./nupkg</PackageOutputPath>
-        <Version>1.0.13</Version>
+        <ToolCommandName>schema-migration-add</ToolCommandName>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageType>Tool</PackageType>
+        <PackageId>Atomatiq.SchemaMigrations.Generator</PackageId>
+        <Authors>Atomatiq</Authors>
+        <Description>Migration generator for SchemaMigrations.Database</Description>
+        <PackageTags>revit;schema</PackageTags>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/atomatiq/SchemaMigrations</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/atomatiq/SchemaMigrations</PackageProjectUrl>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Cocona.Lite" Version="2.2.0" />
-        <PackageReference Include="SchemaMigrations.Abstractions" Version="1.*" />
+        <PackageReference Include="Cocona.Lite" Version="2.2.0"/>
+        <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="1.*"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="PresentationFramework">
-        <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\8.0.10\PresentationFramework.dll</HintPath>
-      </Reference>
+        <Reference Include="PresentationFramework">
+            <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\8.0.10\PresentationFramework.dll</HintPath>
+        </Reference>
         <Reference Include="PresentationCore">
             <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\8.0.10\PresentationCore.dll</HintPath>
         </Reference>
