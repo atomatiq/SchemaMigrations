@@ -1,6 +1,5 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
-using Nice3point.Revit.Toolkit;
 using SchemaMigrations.Database.Core;
 using SchemaMigrations.Database.Schemas;
 
@@ -11,10 +10,10 @@ namespace SchemaMigrations.Database;
 /// </summary>
 /// <param name="element"></param>
 /// <typeparam name="T"></typeparam>
-public sealed class DatabaseConnection<T>(Element? element)
+public sealed class DatabaseConnection<T>(Element element)
     where T : class, new()
 {
-    private readonly Schema _schema = new Schema<T>().Create();
+    private readonly Schema _schema = new Schema<T>().Create(element);
 
     /// <summary>
     /// Saves T object in entity of element of this connection, using T object properties one by one
@@ -139,13 +138,13 @@ public sealed class DatabaseConnection<T>(Element? element)
     /// </summary>
     public void Delete()
     {
-        using var transaction = new Transaction(Context.ActiveDocument, "Delete data");
+        using var transaction = new Transaction(element.Document, "Delete data");
         transaction.Start();
-        foreach (var entityElement in SchemaUtils.GetSchemaElements(_schema, Context.ActiveDocument!))
+        foreach (var entityElement in SchemaUtils.GetSchemaElements(_schema, element.Document))
         {
             entityElement.DeleteEntity(_schema);
         }
-        Context.ActiveDocument!.EraseSchemaAndAllEntities(_schema);
+        element.Document.EraseSchemaAndAllEntities(_schema);
 
         transaction.Commit();
     }

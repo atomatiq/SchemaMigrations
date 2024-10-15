@@ -1,3 +1,4 @@
+using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using SchemaMigrations.Abstractions;
 using SchemaMigrations.Database.Core;
@@ -6,7 +7,7 @@ namespace SchemaMigrations.Database.Schemas;
 
 internal class Schema<T> where T : class
 {
-    internal Schema Create()
+    internal Schema Create(Element element)
     {
         var clientAssembly = typeof(T).Assembly;
         var schemaContextType = clientAssembly.GetTypes().Single(type => type.IsSubclassOf(typeof(SchemaContext)));
@@ -64,7 +65,7 @@ internal class Schema<T> where T : class
             return SchemaMigrationUtils.Create(schemaName, migrationBuilder);
         }
 
-        var schemas = SchemaMigrationUtils.MigrateSchemas(lastExistedGuidDictionary, migrationBuilder);  //it will migrate all the schemas
+        var schemas = SchemaMigrationUtils.MigrateSchemas(lastExistedGuidDictionary, migrationBuilder, element.Document);  //it will migrate all the schemas
         return schemas.Find(migratedSchema => migratedSchema.SchemaName == schemaName)!;
     }
 }

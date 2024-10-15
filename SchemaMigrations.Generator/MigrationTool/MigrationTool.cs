@@ -138,14 +138,9 @@ public class MigrationTool
 
     private static Dictionary<string, Type> FindModelTypes(Assembly assembly)
     {
-        var types = assembly.GetTypes().Where(type => type.IsSubclassOf(typeof(SchemaContext))).ToArray();
-        if (types.Length != 1)
-        {
-            throw new ArgumentException("Project must contain exactly one inheritor of SchemaContext.");
-        }
+        var contextType = assembly.GetTypes().Single(type => type.IsSubclassOf(typeof(SchemaContext)));
 
         var typesDictionary = new Dictionary<string, Type>();
-        var contextType = types[0];
         var propertyInfos = contextType
             .GetProperties()
             .Where(property => property.PropertyType.GetGenericTypeDefinition() == typeof(SchemaSet<>));

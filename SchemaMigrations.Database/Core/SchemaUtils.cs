@@ -1,6 +1,5 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
-using Nice3point.Revit.Extensions;
 
 namespace SchemaMigrations.Database.Core;
 
@@ -17,7 +16,7 @@ public static class SchemaUtils
     /// <returns></returns>
     public static bool HasElements(Schema schema, Document context)
     {
-        return context.GetElements()
+        return new FilteredElementCollector(context)
             .WherePasses(new ExtensibleStorageFilter(schema.GUID))
             .Any();
     }
@@ -30,7 +29,7 @@ public static class SchemaUtils
     /// <returns></returns>
     public static Element[] GetSchemaElements(Schema schema, Document context)
     {
-        return context.GetElements()
+        return new FilteredElementCollector(context)
             .WherePasses(new ExtensibleStorageFilter(schema.GUID))
             .ToArray();
     }

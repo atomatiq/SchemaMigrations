@@ -1,18 +1,20 @@
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
-using Nice3point.Revit.Extensions;
-using Nice3point.Revit.Toolkit;
 using SchemaMigrations.Abstractions;
 
 namespace SchemaMigrations.Database.Core;
 
 internal static class SchemaMigrationUtils
 {
-    private static void MigrateSchema(Schema oldSchema, Schema newSchema)
+    private static void MigrateSchema(Schema oldSchema, Schema newSchema, Document context)
     {
-        var instances = Context.ActiveDocument.EnumerateInstances().ToArray();
-        var types = Context.ActiveDocument.EnumerateTypes().ToArray();
+        var instances = new FilteredElementCollector(context)
+            .WhereElementIsNotElementType()
+            .ToArray();
+        var types = new FilteredElementCollector(context)
+            .WhereElementIsElementType()
+            .ToArray();
         foreach (var instance in instances)
         {
             MigrateElement(instance, oldSchema, newSchema);
@@ -22,19 +24,19 @@ internal static class SchemaMigrationUtils
             MigrateElement(type, oldSchema, newSchema);
         }
 
-        Context.ActiveDocument!.EraseSchemaAndAllEntities(oldSchema);
+        context.EraseSchemaAndAllEntities(oldSchema);
     }
     
-    internal static List<Schema> MigrateSchemas(Dictionary<string, Guid> lastExistedGuids, MigrationBuilder migrationBuilder)
+    internal static List<Schema> MigrateSchemas(Dictionary<string, Guid> lastExistedGuids, MigrationBuilder migrationBuilder, Document context)
     {
         var result = new List<Schema>();
         foreach (var guidPair in lastExistedGuids)
         {
             var existingSchema = Schema.Lookup(guidPair.Value);
             var resultSchema = Create(guidPair.Key, migrationBuilder);
-            if (existingSchema is not null && SchemaUtils.HasElements(existingSchema, Context.ActiveDocument!))
+            if (existingSchema is not null && SchemaUtils.HasElements(existingSchema, context))
             {
-                MigrateSchema(existingSchema, resultSchema);
+                MigrateSchema(existingSchema, resultSchema, context);
             }
             result.Add(resultSchema);
         }
