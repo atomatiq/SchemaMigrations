@@ -40,7 +40,7 @@ Other project would have references on it if they need.
 Add reference to nuget-package SchemaMigrations.Database in Database project. You should use version of package according your Revit Version,
 or simply change your .csproj like this if you are using Nice3Point or similar template:
 ```xml
-<PackageReference Include="SchemaMigrations.Database" Version="$(RevitVersion).*" />
+<PackageReference Include="Atomatiq.SchemaMigrations.Database" Version="$(RevitVersion).*" />
 ```
 
 1. Create Models folder and define your Model:
@@ -68,18 +68,18 @@ public class ApplicationSchemaContext : SchemaContext
 ```
 3. Install SchemaMigrations.Generator tool globally:
 ```powershell
-dotnet install SchemaMigrations.Generator --global
+dotnet install Atomatiq.SchemaMigrations.Generator --global
 ```
 4. Open your terminal and make sure that you are in your Database project folder. Run 'cd Directory'
 to go to Directory. Run 'cd ..' to go to parent directory.
 
 5. Run the following command in terminal:
 ```powershell
-AddSchemaMigration InitialMigration
+schema-migration-add InitialMigration
 ```
 This command will build your solution to affect all the changes and after that start adding a migration. If you do not want to build, add '--no-build' flag:
 ```powershell
-AddSchemaMigration InitialMigration --no-build
+schema-migration-add InitialMigration --no-build
 ```
 The command will create a Migrations folder (if needed) and a first migration class called "InitialMigration_{datetime_stamp}":
 ```c#
