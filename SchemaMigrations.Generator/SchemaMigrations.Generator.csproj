@@ -12,7 +12,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Cocona" Version="2.2.0" />
+      <PackageReference Include="Cocona.Lite" Version="2.2.0" />
         <PackageReference Include="SchemaMigrations.Abstractions" Version="1.*" />
     </ItemGroup>
 
