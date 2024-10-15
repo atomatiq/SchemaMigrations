@@ -1,4 +1,6 @@
+using System.Diagnostics;
 using System.Reflection;
+using System.Text;
 using SchemaMigrations.Abstractions;
 using SchemaMigrations.Abstractions.Models;
 
@@ -6,8 +8,48 @@ namespace SchemaMigrations.Generator.MigrationTool;
 
 public class MigrationTool
 {
+    public static void BuildSolution(string projectPath)
+    {
+        var solutionDir = projectPath;
+        Console.OutputEncoding = Encoding.UTF8;
+        Console.WriteLine($"Solution dir is {solutionDir}");
+        while (Directory.GetFiles(solutionDir, $"*.sln").Length == 0)
+        {
+            var parent = Directory.GetParent(solutionDir);
+            if (parent is null)
+                throw new DirectoryNotFoundException("Unable to find solution directory");
+            
+            solutionDir = parent.FullName;
+            Console.WriteLine($"Solution dir is {solutionDir}");
+        }
+        
+        Console.WriteLine($"Starting building solution for {solutionDir}");
+        
+        var processInfo = new ProcessStartInfo("dotnet", $"build \"{solutionDir}\"")
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            StandardOutputEncoding = Encoding.UTF8,
+            StandardErrorEncoding = Encoding.UTF8,
+        };
+
+        var process = Process.Start(processInfo);
+
+        process!.OutputDataReceived += (sender, e) => Console.WriteLine(e.Data);
+        process.ErrorDataReceived += (sender, e) => Console.WriteLine(e.Data);
+
+        process.BeginOutputReadLine();
+        process.BeginErrorReadLine();
+
+        process.WaitForExit();
+        
+        Console.WriteLine($"Finished building solution for {solutionDir}");
+    }
     public static void AddMigration(string migrationName, string projectPath)
     {
+        Console.WriteLine($"Adding migration: {migrationName}");
         var projectDir = projectPath.Split('\\').Last();
         var dllPath = string.Empty;
         foreach (var dir in Directory.GetDirectories(projectPath, $"*", searchOption: SearchOption.AllDirectories))

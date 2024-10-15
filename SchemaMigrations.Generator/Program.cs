@@ -7,19 +7,20 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        CoconaApp.Run(([Argument] string migration, [Argument] string projectPath) =>
+        CoconaApp.Run(([Argument] string migration) =>
         {
-            Run(migration, projectPath);
+            Run(migration);
         });
     }
 
-    private static void Run(string migration, string projectPath)
+    private static void Run(string migration)
     {
         AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
         try
         {
-            Console.WriteLine($"Adding migration: {migration}");
-            MigrationTool.MigrationTool.AddMigration(migration, projectPath);
+            var currentDirectory = Environment.CurrentDirectory;
+            MigrationTool.MigrationTool.BuildSolution(currentDirectory);
+            MigrationTool.MigrationTool.AddMigration(migration, currentDirectory);
         }
         catch (Exception e)
         {
