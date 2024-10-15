@@ -7,19 +7,22 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        CoconaApp.Run(([Argument] string migration) =>
+        CoconaLiteApp.Run(([Argument] string migration, bool noBuild = false) =>
         {
-            Run(migration);
+            Run(migration, noBuild);
         });
     }
 
-    private static void Run(string migration)
+    private static void Run(string migration, bool noBuild = false)
     {
         AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
         try
         {
             var currentDirectory = Environment.CurrentDirectory;
-            MigrationTool.MigrationTool.BuildSolution(currentDirectory);
+            if (!noBuild)
+            {
+                MigrationTool.MigrationTool.BuildSolution(currentDirectory);
+            }
             MigrationTool.MigrationTool.AddMigration(migration, currentDirectory);
         }
         catch (Exception e)

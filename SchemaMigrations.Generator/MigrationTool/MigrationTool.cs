@@ -12,7 +12,6 @@ public class MigrationTool
     {
         var solutionDir = projectPath;
         Console.OutputEncoding = Encoding.UTF8;
-        Console.WriteLine($"Solution dir is {solutionDir}");
         while (Directory.GetFiles(solutionDir, $"*.sln").Length == 0)
         {
             var parent = Directory.GetParent(solutionDir);
@@ -20,7 +19,6 @@ public class MigrationTool
                 throw new DirectoryNotFoundException("Unable to find solution directory");
             
             solutionDir = parent.FullName;
-            Console.WriteLine($"Solution dir is {solutionDir}");
         }
         
         Console.WriteLine($"Starting building solution for {solutionDir}");

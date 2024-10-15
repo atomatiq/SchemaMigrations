@@ -32,7 +32,7 @@ partial class Build
             DotNetPack(settings => settings
                 .SetConfiguration("Generator Release")
                 .SetProject(Solution.SchemaMigrations_Generator)
-                .SetVersion("1.1.8")
+                .SetVersion("1.1.9")
                 .SetOutputDirectory($"{ArtifactsDirectory}/SchemaMigrations.Generator")
                 .SetVerbosity(DotNetVerbosity.minimal));
 
