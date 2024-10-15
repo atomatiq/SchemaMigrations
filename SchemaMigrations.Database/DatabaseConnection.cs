@@ -16,13 +16,11 @@ public sealed class DatabaseConnection<T>(Element? element)
 {
     private readonly Schema _schema = new Schema<T>().Create();
 
-    private Transaction? _transaction;
-
     /// <summary>
     /// Saves T object in entity of element of this connection, using T object properties one by one
     /// </summary>
     /// <param name="value"></param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="System.ArgumentNullException"></exception>
     public void SaveObject(T value)
     {
         if (element is null)
@@ -82,7 +80,7 @@ public sealed class DatabaseConnection<T>(Element? element)
     /// Read information from entity of element of this connection and constructs a new T object with saved values. If there are no entity, returns new T. 
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="System.ArgumentNullException"></exception>
     public T LoadObject()
     {
         if (element is null)

@@ -20,3 +20,5 @@
 
 #User-specific files
 *.user
+
+/.idea/

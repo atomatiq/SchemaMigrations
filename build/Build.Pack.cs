@@ -5,18 +5,17 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 partial class Build
 {
-    Target Pack => _ => _
+    Target Pack => definition => definition
         .DependsOn(Clean)
         .OnlyWhenStatic(() => IsLocalBuild || GitRepository.IsOnMainOrMasterBranch())
         .Executes(() =>
         {
             ValidateRelease();
 
-            foreach (var configuration in GlobBuildConfigurations())
                 DotNetPack(settings => settings
-                    .SetConfiguration(configuration)
+                    .SetConfiguration("Release R25")
                     .SetProject(Solution.SchemaMigrations_Abstractions)
-                    .SetVersion(GetPackVersion(configuration))
+                    .SetVersion("1.1.0")
                     .SetOutputDirectory($"{ArtifactsDirectory}/SchemaMigrations.Abstractions")
                     .SetVerbosity(DotNetVerbosity.minimal)
                     .SetPackageReleaseNotes(CreateNugetChangelog()));
@@ -29,6 +28,22 @@ partial class Build
                     .SetOutputDirectory($"{ArtifactsDirectory}/SchemaMigrations.Database")
                     .SetVerbosity(DotNetVerbosity.minimal)
                     .SetPackageReleaseNotes(CreateNugetChangelog()));
+            
+            DotNetPack(settings => settings
+                .SetConfiguration("Generator Release")
+                .SetProject(Solution.SchemaMigrations_Generator)
+                .SetVersion("1.1.8")
+                .SetOutputDirectory($"{ArtifactsDirectory}/SchemaMigrations.Generator")
+                .SetVerbosity(DotNetVerbosity.minimal));
+
+            if (IsLocalBuild)
+            {
+                var artifacts = Directory.GetFiles(ArtifactsDirectory, "*", SearchOption.AllDirectories);
+                foreach (var file in artifacts)
+                {
+                    File.Copy(file, Path.Combine(RootDirectory, "packages", Path.GetFileName(file)), overwrite: true);
+                }
+            }
         });
 
     string GetPackVersion(string configuration)

@@ -8,22 +8,12 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>AddSchemaMigration</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
-        <Version>1.0.12</Version>
-        <Configurations>Release;Debug</Configurations>
-        <Platforms>AnyCPU</Platforms>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">true</DebugSymbols>
-      <Optimize Condition=" '$(Optimize)' == '' ">false</Optimize>
+        <Version>1.0.13</Version>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Cocona" Version="2.2.0" />
+        <PackageReference Include="SchemaMigrations.Abstractions" Version="1.*" />
     </ItemGroup>
 
     <ItemGroup>
@@ -36,10 +26,6 @@
         <Reference Include="WindowsBase">
             <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\8.0.10\WindowsBase.dll</HintPath>
         </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\SchemaMigrations.Abstractions\SchemaMigrations.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

@@ -33,7 +33,7 @@ internal class Schema<T> where T : class
 
         foreach (var migrationType in migrationTypes)
         {
-            var migrationInstance = (Migration)Activator.CreateInstance(migrationType);
+            var migrationInstance = (Migration?)Activator.CreateInstance(migrationType);
 
             if (migrationInstance is null) continue;
             
@@ -65,6 +65,6 @@ internal class Schema<T> where T : class
         }
 
         var schemas = SchemaMigrationUtils.MigrateSchemas(lastExistedGuidDictionary, migrationBuilder);  //it will migrate all the schemas
-        return schemas.Find(migratedSchema => migratedSchema.SchemaName == schemaName);
+        return schemas.Find(migratedSchema => migratedSchema.SchemaName == schemaName)!;
     }
 }
