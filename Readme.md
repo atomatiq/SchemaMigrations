@@ -23,30 +23,9 @@ Package included by default in [Revit Templates](https://github.com/Nice3point/R
 
 ## Table of contents
 
-* [How to get started](#howtogetstarted)
-* [ExternalApplication](#externalapplication)
-* [ExternalDBApplication](#externaldbapplication)
-* [External events](#external-events)
-  * [ActionEventHandler](#actioneventhandler)
-  * [IdlingEventHandler](#idlingeventhandler)
-  * [AsyncEventHandler](#asynceventhandler)
-  * [AsyncEventHandler\<T>](#asynceventhandlert)
-* [ExternalCommandAvailability](#externalcommandavailability)
-* [Context](#context)
-* [Options](#options)
-  * [FamilyLoadOptions](#familyloadoptions)
-  * [DuplicateTypeNamesHandler](#duplicatetypenameshandler)
-  * [SaveSharedCoordinatesCallback](#savesharedcoordinatescallback)
-  * [FrameworkElementCreator](#frameworkelementcreator)
-  * [SelectionConfiguration](#selectionconfiguration)
-* [Decorators](#decorators)
-  * [DockablePaneProvider](#dockablepaneprovider)
-* [Helpers](#helpers)
-  * [ResolveHelper](#resolvehelper)
-  * [Add-ins Dependency Isolation](#add-ins-dependency-isolation)
-* [Samples](#samples)
-  * [External application flow control](#external-application-flow-control)
-  * [External command flow control](#external-command-flow-control)
+* [How to get started](#how-to-get-started)
+* [Save data to schema and load data from schema](#Save-data-to-schema-and-load-data-from-schema)
+* [Add changes to your schema](#Add-changes-to-your-schema)
 
 ## Features
 
@@ -96,9 +75,9 @@ to go to Directory. Run 'cd ..' to go to parent directory.
 
 5. Run the following command in terminal:
 ```powershell
-AddSchemaMigration InitialMigration ${PWD}
+AddSchemaMigration InitialMigration
 ```
-It will create a Migrations folder and a first migration class called "InitialMigration_{datetime_stamp}":
+It will build your solution to affect all the changes and create a Migrations folder and a first migration class called "InitialMigration_{datetime_stamp}":
 ```c#
 using SchemaMigrations.Abstractions;
 using SchemaMigrations.Database.Schemas;
