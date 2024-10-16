@@ -28,15 +28,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="PresentationFramework">
-            <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\8.0.10\PresentationFramework.dll</HintPath>
-        </Reference>
-        <Reference Include="PresentationCore">
-            <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\8.0.10\PresentationCore.dll</HintPath>
-        </Reference>
-        <Reference Include="WindowsBase">
-            <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\8.0.10\WindowsBase.dll</HintPath>
-        </Reference>
+        <Reference Include="PresentationFramework"/>
+        <Reference Include="PresentationCore"/>
+        <Reference Include="WindowsBase"/>
     </ItemGroup>
 
     <ItemGroup>

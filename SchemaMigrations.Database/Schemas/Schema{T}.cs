@@ -11,12 +11,12 @@ internal class Schema<T> where T : class
     {
         var clientAssembly = typeof(T).Assembly;
         var schemaContextType = clientAssembly.GetTypes().Single(type => type.IsSubclassOf(typeof(SchemaContext)));
-        
+
         var propertyInfos = schemaContextType
             .GetProperties()
             .Where(property => property.PropertyType.GetGenericTypeDefinition() == typeof(SchemaSet<>));
         var type = propertyInfos.First(info => info.PropertyType.GetGenericArguments()[0] == typeof(T));
-        
+
         var schemaName = type.Name;
 
         var migrationTypes = clientAssembly.GetTypes()
@@ -37,7 +37,7 @@ internal class Schema<T> where T : class
             var migrationInstance = (Migration?)Activator.CreateInstance(migrationType);
 
             if (migrationInstance is null) continue;
-            
+
             migrationInstance.Up(migrationBuilder);
             foreach (var pair in migrationInstance.GuidDictionary)
             {
@@ -59,13 +59,13 @@ internal class Schema<T> where T : class
 
         var schema = Schema.Lookup(lastGuidDictionary[schemaName]);
         if (schema is not null) return schema;
-        
+
         if (!lastExistedGuidDictionary.TryGetValue(schemaName, out _))
         {
             return SchemaMigrationUtils.Create(schemaName, migrationBuilder);
         }
 
-        var schemas = SchemaMigrationUtils.MigrateSchemas(lastExistedGuidDictionary, migrationBuilder, element.Document);  //it will migrate all the schemas
+        var schemas = SchemaMigrationUtils.MigrateSchemas(lastExistedGuidDictionary, migrationBuilder, element.Document); //it will migrate all the schemas
         return schemas.Find(migratedSchema => migratedSchema.SchemaName == schemaName)!;
     }
 }

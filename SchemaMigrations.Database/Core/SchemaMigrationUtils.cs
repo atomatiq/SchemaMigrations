@@ -19,6 +19,7 @@ internal static class SchemaMigrationUtils
         {
             MigrateElement(instance, oldSchema, newSchema);
         }
+
         foreach (var type in types)
         {
             MigrateElement(type, oldSchema, newSchema);
@@ -26,7 +27,7 @@ internal static class SchemaMigrationUtils
 
         context.EraseSchemaAndAllEntities(oldSchema);
     }
-    
+
     internal static List<Schema> MigrateSchemas(Dictionary<string, Guid> lastExistedGuids, MigrationBuilder migrationBuilder, Document context)
     {
         var result = new List<Schema>();
@@ -38,8 +39,10 @@ internal static class SchemaMigrationUtils
             {
                 MigrateSchema(existingSchema, resultSchema, context);
             }
+
             result.Add(resultSchema);
         }
+
         return result;
     }
 
@@ -47,12 +50,12 @@ internal static class SchemaMigrationUtils
     {
         var data = migrationBuilder.BuildersData.First(data => data.Name == schemaName);
         var schemaDescriptor = migrationBuilder.Schemas.First(schema => schema.SchemaName == schemaName);
-        
+
         var schemaBuilder = new SchemaBuilder(data.Guid)
             .SetSchemaName(data.Name)
             .SetDocumentation(data.Documentation)
             .SetVendorId(data.VendorId);
-        
+
         foreach (var field in schemaDescriptor.Fields)
         {
             var propertyType = field.Type;
@@ -63,14 +66,14 @@ internal static class SchemaMigrationUtils
 
                 if (genericTypeDefinition == typeof(List<>))
                 {
-                    var elementType = propertyType.GetGenericArguments()[0]; 
+                    var elementType = propertyType.GetGenericArguments()[0];
                     schemaBuilder.AddArrayField(field.Name, elementType);
                 }
                 else if (genericTypeDefinition == typeof(Dictionary<,>))
                 {
                     var genericArgs = propertyType.GetGenericArguments();
-                    var keyType = genericArgs[0];   
-                    var valueType = genericArgs[1]; 
+                    var keyType = genericArgs[0];
+                    var valueType = genericArgs[1];
                     schemaBuilder.AddMapField(field.Name, keyType, valueType);
                 }
             }

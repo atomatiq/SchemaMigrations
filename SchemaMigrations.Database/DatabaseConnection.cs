@@ -11,7 +11,6 @@ namespace SchemaMigrations.Database;
 /// </summary>
 /// <param name="element"></param>
 /// <typeparam name="T"></typeparam>
-///
 [PublicAPI]
 public sealed class DatabaseConnection<T>(Element element)
     where T : class, new()
@@ -27,7 +26,7 @@ public sealed class DatabaseConnection<T>(Element element)
     {
         if (element is null)
             throw new ArgumentNullException(nameof(element));
-        
+
         var objectType = value.GetType();
 
         var properties = objectType.GetProperties();
@@ -42,7 +41,7 @@ public sealed class DatabaseConnection<T>(Element element)
             var propertyName = property.Name;
             var propertyValue = property.GetValue(value);
             if (propertyValue == null) continue;
-            
+
             var propertyType = property.PropertyType;
             var method = entity.GetType()
                 .GetMethods().FirstOrDefault(methodInfo =>
@@ -87,7 +86,7 @@ public sealed class DatabaseConnection<T>(Element element)
     {
         if (element is null)
             throw new ArgumentNullException(nameof(element));
-        
+
         var entity = element.GetEntity(_schema);
         var obj = new T();
         var objType = typeof(T);
@@ -147,6 +146,7 @@ public sealed class DatabaseConnection<T>(Element element)
         {
             entityElement.DeleteEntity(_schema);
         }
+
         element.Document.EraseSchemaAndAllEntities(_schema);
 
         transaction.Commit();

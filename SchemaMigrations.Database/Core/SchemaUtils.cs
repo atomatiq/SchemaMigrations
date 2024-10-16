@@ -27,11 +27,10 @@ public static class SchemaUtils
     /// <param name="schema"></param>
     /// <param name="context"></param>
     /// <returns></returns>
-    public static Element[] GetSchemaElements(Schema schema, Document context)
+    public static IList<Element> GetSchemaElements(Schema schema, Document context)
     {
         return new FilteredElementCollector(context)
             .WherePasses(new ExtensibleStorageFilter(schema.GUID))
-            .ToElements()
-            .ToArray();
+            .ToElements();
     }
 }
