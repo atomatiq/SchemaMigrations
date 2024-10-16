@@ -31,6 +31,7 @@ public static class SchemaUtils
     {
         return new FilteredElementCollector(context)
             .WherePasses(new ExtensibleStorageFilter(schema.GUID))
+            .ToElements()
             .ToArray();
     }
 }

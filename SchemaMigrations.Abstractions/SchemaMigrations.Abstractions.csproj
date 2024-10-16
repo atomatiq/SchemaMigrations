@@ -20,5 +20,12 @@
         <PackageProjectUrl>https://github.com/atomatiq/SchemaMigrations</PackageProjectUrl>
 <!--        <PackageIcon>images\PackageIcon.png</PackageIcon>-->
     </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="PolySharp" Version="1.14.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 
 </Project>

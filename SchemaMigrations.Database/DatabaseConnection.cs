@@ -1,5 +1,6 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
+using JetBrains.Annotations;
 using SchemaMigrations.Database.Core;
 using SchemaMigrations.Database.Schemas;
 
@@ -10,6 +11,8 @@ namespace SchemaMigrations.Database;
 /// </summary>
 /// <param name="element"></param>
 /// <typeparam name="T"></typeparam>
+///
+[PublicAPI]
 public sealed class DatabaseConnection<T>(Element element)
     where T : class, new()
 {

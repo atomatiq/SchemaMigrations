@@ -79,11 +79,6 @@ partial class Build
             .Where(config => Configurations.Any(wildcard => FileSystemName.MatchesSimpleExpression(wildcard, config)))
             .ToList();
 
-        foreach (var configuration in configurations)
-        {
-            Console.WriteLine(configuration);
-        }
-
         Assert.NotEmpty(configurations, $"No solution configurations have been found. Pattern: {string.Join(" | ", Configurations)}");
         return configurations;
     }

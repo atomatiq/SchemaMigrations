@@ -1,12 +1,10 @@
-using System;
-
 namespace SchemaMigrations.Abstractions;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public class SchemaBuilderData
 {
-    public Guid Guid { get; set; }
-    public string Name { get; set; }
-    public string Documentation { get; set; }
-    public string VendorId { get; set; }
-    public Type ModelType { get; set; }
+    public required Guid Guid { get; set; }
+    public required string Name { get; set; }
+    public required string Documentation { get; set; }
+    public required string VendorId { get; set; }
 }
