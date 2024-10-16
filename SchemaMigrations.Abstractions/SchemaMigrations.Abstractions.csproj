@@ -18,6 +18,8 @@
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/atomatiq/SchemaMigrations</RepositoryUrl>
         <PackageProjectUrl>https://github.com/atomatiq/SchemaMigrations</PackageProjectUrl>
+        <PackageLicenseFile>License.md</PackageLicenseFile>
+        <PackageReadmeFile>Readme.md</PackageReadmeFile>
 <!--        <PackageIcon>images\PackageIcon.png</PackageIcon>-->
     </PropertyGroup>
     
@@ -26,6 +28,12 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+<!--        <None Include="..\..\.nuget\PackageIcon.png" Link="NuGet\PackageIcon.png" PackagePath="images\" Pack="true"/>-->
+        <None Include="..\License.md" Link="NuGet\License.md" PackagePath="" Pack="true"/>
+        <None Include="..\Readme.md" Link="NuGet\Readme.md" PackagePath="" Pack="true"/>
     </ItemGroup>
 
 </Project>
