@@ -12,14 +12,14 @@ partial class Build
         {
             ValidateRelease();
 
-                DotNetPack(settings => settings
-                    .SetConfiguration("Release R25")
-                    .SetProject(Solution.SchemaMigrations_Abstractions)
-                    .SetVersion(AbstractionVersion)
-                    .SetOutputDirectory($"{ArtifactsDirectory}/SchemaMigrations.Abstractions")
-                    .SetVerbosity(DotNetVerbosity.minimal)
-                    .SetPackageReleaseNotes(CreateNugetChangelog()));
-            
+            DotNetPack(settings => settings
+                .SetConfiguration("Release R25")
+                .SetProject(Solution.SchemaMigrations_Abstractions)
+                .SetVersion(AbstractionVersion)
+                .SetOutputDirectory($"{ArtifactsDirectory}/SchemaMigrations.Abstractions")
+                .SetVerbosity(DotNetVerbosity.minimal)
+                .SetPackageReleaseNotes(CreateNugetChangelog()));
+
             foreach (var configuration in GlobBuildConfigurations())
                 DotNetPack(settings => settings
                     .SetConfiguration(configuration)
@@ -28,7 +28,7 @@ partial class Build
                     .SetOutputDirectory($"{ArtifactsDirectory}/SchemaMigrations.Database")
                     .SetVerbosity(DotNetVerbosity.minimal)
                     .SetPackageReleaseNotes(CreateNugetChangelog()));
-            
+
             DotNetPack(settings => settings
                 .SetConfiguration("Generator Release")
                 .SetProject(Solution.SchemaMigrations_Generator)

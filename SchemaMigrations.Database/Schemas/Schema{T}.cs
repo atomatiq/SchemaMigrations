@@ -1,3 +1,4 @@
+using System.Reflection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using SchemaMigrations.Abstractions;
@@ -10,23 +11,9 @@ internal class Schema<T> where T : class
     internal Schema Create(Element element)
     {
         var clientAssembly = typeof(T).Assembly;
-        var schemaContextType = clientAssembly.GetTypes().Single(type => type.IsSubclassOf(typeof(SchemaContext)));
-
-        var propertyInfos = schemaContextType
-            .GetProperties()
-            .Where(property => property.PropertyType.GetGenericTypeDefinition() == typeof(SchemaSet<>));
-        var type = propertyInfos.First(info => info.PropertyType.GetGenericArguments()[0] == typeof(T));
-
-        var schemaName = type.Name;
-
-        var migrationTypes = clientAssembly.GetTypes()
-            .Where(assemblyType => assemblyType.IsClass && !assemblyType.IsAbstract && assemblyType.IsSubclassOf(typeof(Migration)))
-            .OrderBy(migrationType =>
-            {
-                var className = migrationType.Name;
-                return className.Remove(0, className.IndexOf('_'));
-            })
-            .ToArray();
+        
+        var schemaName = GetSchemaName(clientAssembly);
+        var migrationTypes = GetMigrationTypes(clientAssembly);
 
         var migrationBuilder = new MigrationBuilder();
         var lastGuidDictionary = new Dictionary<string, Guid>();
@@ -67,5 +54,31 @@ internal class Schema<T> where T : class
 
         var schemas = SchemaMigrationUtils.MigrateSchemas(lastExistedGuidDictionary, migrationBuilder, element.Document); //it will migrate all the schemas
         return schemas.Find(migratedSchema => migratedSchema.SchemaName == schemaName)!;
+    }
+
+    private static string GetSchemaName(Assembly clientAssembly)
+    {
+        var schemaContextType = clientAssembly.GetTypes().Single(type => type.IsSubclassOf(typeof(SchemaContext)));
+
+        var propertyInfos = schemaContextType
+            .GetProperties()
+            .Where(property => property.PropertyType.GetGenericTypeDefinition() == typeof(SchemaSet<>));
+        var type = propertyInfos.First(info => info.PropertyType.GetGenericArguments()[0] == typeof(T));
+
+        var schemaName = type.Name;
+        return schemaName;
+    }
+
+    private static Type[] GetMigrationTypes(Assembly clientAssembly)
+    {
+        var migrationTypes = clientAssembly.GetTypes()
+            .Where(assemblyType => assemblyType.IsClass && !assemblyType.IsAbstract && assemblyType.IsSubclassOf(typeof(Migration)))
+            .OrderBy(migrationType =>
+            {
+                var className = migrationType.Name;
+                return className.Remove(0, className.IndexOf('_'));
+            })
+            .ToArray();
+        return migrationTypes;
     }
 }

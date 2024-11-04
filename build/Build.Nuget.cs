@@ -8,7 +8,7 @@ partial class Build
 {
     const string NugetApiUrl = "https://api.nuget.org/v3/index.json";
 
-    Target NuGetPush => _ => _
+    Target NuGetPush => definition => definition
         .DependsOn(Pack)
         .Requires(() => NugetApiKey)
         .OnlyWhenStatic(() => IsLocalBuild && GitRepository.IsOnMainOrMasterBranch())
@@ -21,12 +21,12 @@ partial class Build
                     .SetApiKey(NugetApiKey));
         });
 
-    Target NuGetDelete => _ => _
+    Target NuGetDelete => definition => definition
         .Requires(() => NugetApiKey)
         .OnlyWhenStatic(() => IsLocalBuild && GitRepository.IsOnMainOrMasterBranch())
         .Executes(() =>
         {
-            foreach (var (config, version) in VersionMap)
+            foreach (var (_, version) in VersionMap)
             {
                 DotNetNuGetDelete(settings => settings
                     .SetPackage("Nice3point.Revit.Toolkit")

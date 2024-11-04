@@ -1,10 +1,12 @@
-using System;
-using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace SchemaMigrations.Abstractions;
 
+[UsedImplicitly]
 public abstract class Migration
 {
-    public abstract Dictionary<string, Guid> GuidDictionary { get; }
+    [UsedImplicitly] public abstract Dictionary<string, Guid> GuidDictionary { get; }
+
+    [UsedImplicitly]
     public abstract void Up(MigrationBuilder migrationBuilder);
 }

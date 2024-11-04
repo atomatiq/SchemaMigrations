@@ -1,16 +1,15 @@
 ﻿using System.Reflection;
 using Cocona;
+using JetBrains.Annotations;
 
 namespace SchemaMigrations.Generator;
 
+[UsedImplicitly]
 public class Program
 {
     public static void Main(string[] args)
     {
-        CoconaLiteApp.Run(([Argument] string migration, bool noBuild = false) =>
-        {
-            Run(migration, noBuild);
-        });
+        CoconaLiteApp.Run(Run);
     }
 
     private static void Run(string migration, bool noBuild = false)
@@ -38,12 +37,7 @@ public class Program
 
         var assemblyPath = Path.Combine(Directory.GetParent(args.RequestingAssembly!.Location)!.FullName, assemblyName.Name + ".dll");
         Console.WriteLine($"Loading assembly: {assemblyPath}");
-        if (File.Exists(assemblyPath))
-        {
-            var ass = Assembly.LoadFrom(assemblyPath);
-            return Assembly.LoadFrom(assemblyPath);
-        }
-
-        return null;
+        
+        return File.Exists(assemblyPath) ? Assembly.LoadFrom(assemblyPath) : null;
     }
 }

@@ -1,13 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
+using JetBrains.Annotations;
 
 namespace SchemaMigrations.Abstractions.Models;
 
+[UsedImplicitly]
 public class SchemaDescriptor(string schemaName)
 {
-    public string SchemaName { get; set; } = schemaName;
-    public List<FieldDescriptor> Fields { get; set; } = [];
+    public string SchemaName { get; } = schemaName;
+    public List<FieldDescriptor> Fields { get; } = [];
 
     public void AddField(FieldDescriptor field)
     {

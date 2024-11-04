@@ -1,6 +1,6 @@
 ﻿sealed partial class Build
 {
-    Target Clean => _ => _
+    Target Clean => definition => definition
         .OnlyWhenStatic(() => IsLocalBuild)
         .Executes(() =>
         {

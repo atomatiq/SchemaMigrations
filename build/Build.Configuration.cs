@@ -1,10 +1,10 @@
 ﻿sealed partial class Build
 {
-    string PublishVersion => Version ??= VersionMap.Values.Last();
-    readonly string GeneratorVersion = "1.0.0";
-    readonly string AbstractionVersion = "1.0.0";
+    const string GeneratorVersion = "1.0.0";
+    const string AbstractionVersion = "1.0.0";
     readonly AbsolutePath ArtifactsDirectory = RootDirectory / "output";
     readonly AbsolutePath ChangeLogPath = RootDirectory / "Changelog.md";
+    string PublishVersion => Version ??= VersionMap.Values.Last();
 
     protected override void OnBuildInitialized()
     {

@@ -1,11 +1,13 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using JetBrains.Annotations;
 using SchemaMigrations.Abstractions;
 using SchemaMigrations.Abstractions.Models;
 
 namespace SchemaMigrations.Generator.MigrationTool;
 
+[UsedImplicitly]
 public class MigrationTool
 {
     public static void BuildSolution(string projectPath)
@@ -45,6 +47,7 @@ public class MigrationTool
         
         Console.WriteLine($"Finished building solution for {solutionDir}");
     }
+
     public static void AddMigration(string migrationName, string projectPath)
     {
         Console.WriteLine($"Adding migration: {migrationName}");

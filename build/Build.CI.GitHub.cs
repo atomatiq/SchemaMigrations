@@ -6,7 +6,7 @@ using Octokit;
 
 sealed partial class Build
 {
-    Target PublishGitHub => _ => _
+    Target PublishGitHub => definition => definition
         .DependsOn(Pack)
         .Requires(() => GitHubToken)
         .Requires(() => GitRepository)

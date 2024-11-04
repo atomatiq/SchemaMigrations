@@ -1,6 +1,8 @@
+using JetBrains.Annotations;
+
 namespace SchemaMigrations.Abstractions;
 
-// ReSharper disable once ClassNeverInstantiated.Global
+[UsedImplicitly]
 public class SchemaBuilderData
 {
     public required Guid Guid { get; set; }
