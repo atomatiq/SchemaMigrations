@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		License.md = License.md
 		Readme.md = Readme.md
 		.gitignore = .gitignore
+		.github\workflows\Workflow.yml = .github\workflows\Workflow.yml
 	EndProjectSection
 EndProject
 Global
