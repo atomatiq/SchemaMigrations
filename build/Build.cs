@@ -7,6 +7,7 @@ sealed partial class Build : NukeBuild
 {
     [GitRepository] readonly GitRepository GitRepository;
     [Solution(GenerateProjects = true)] readonly Solution Solution;
+    string AbstractionVersion;
     string[] Configurations;
     string GeneratorVersion;
 
