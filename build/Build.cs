@@ -5,14 +5,15 @@ using Nuke.Common.Tools.Git;
 
 sealed partial class Build : NukeBuild
 {
-    string Version;
+    [GitRepository] readonly GitRepository GitRepository;
+    [Solution(GenerateProjects = true)] readonly Solution Solution;
     string[] Configurations;
-    Dictionary<string, string> VersionMap;
+    string GeneratorVersion;
 
     [Secret] [Parameter] string GitHubToken;
     [Secret] [Parameter] string NugetApiKey;
-    [GitRepository] readonly GitRepository GitRepository;
-    [Solution(GenerateProjects = true)] readonly Solution Solution;
+    string Version;
+    Dictionary<string, string> VersionMap;
 
     public static int Main() => Execute<Build>(x => x.Pack);
 

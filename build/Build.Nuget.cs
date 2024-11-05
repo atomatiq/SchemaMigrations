@@ -29,11 +29,28 @@ partial class Build
             foreach (var (_, version) in VersionMap)
             {
                 DotNetNuGetDelete(settings => settings
-                    .SetPackage("Nice3point.Revit.Toolkit")
+                    .SetPackage("Atomatiq.SchemaMigrations.Database")
                     .SetVersion(version)
                     .SetSource(NugetApiUrl)
                     .SetApiKey(NugetApiKey)
                     .EnableNonInteractive());
             }
+
+            foreach (var (_, version) in VersionMap)
+            {
+                DotNetNuGetDelete(settings => settings
+                    .SetPackage("Atomatiq.SchemaMigrations.Abstractions")
+                    .SetVersion(version)
+                    .SetSource(NugetApiUrl)
+                    .SetApiKey(NugetApiKey)
+                    .EnableNonInteractive());
+            }
+
+            DotNetNuGetDelete(settings => settings
+                .SetPackage("Atomatiq.SchemaMigrations.Generator")
+                .SetVersion(GeneratorVersion)
+                .SetSource(NugetApiUrl)
+                .SetApiKey(NugetApiKey)
+                .EnableNonInteractive());
         });
 }

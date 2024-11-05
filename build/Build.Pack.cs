@@ -12,20 +12,21 @@ partial class Build
         {
             ValidateRelease();
 
-            DotNetPack(settings => settings
-                .SetConfiguration("Release R25")
-                .SetProject(Solution.SchemaMigrations_Abstractions)
-                .SetVersion(AbstractionVersion)
-                .SetOutputDirectory($"{ArtifactsDirectory}/SchemaMigrations.Abstractions")
-                .SetVerbosity(DotNetVerbosity.minimal)
-                .SetPackageReleaseNotes(CreateNugetChangelog()));
+            foreach (var configuration in GlobBuildConfigurations())
+                DotNetPack(settings => settings
+                    .SetConfiguration(configuration)
+                    .SetProject(Solution.SchemaMigrations_Abstractions)
+                    .SetVersion(GetPackVersion(configuration))
+                    .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Abstractions.Name}")
+                    .SetVerbosity(DotNetVerbosity.minimal)
+                    .SetPackageReleaseNotes(CreateNugetChangelog()));
 
             foreach (var configuration in GlobBuildConfigurations())
                 DotNetPack(settings => settings
                     .SetConfiguration(configuration)
                     .SetProject(Solution.SchemaMigrations_Database)
                     .SetVersion(GetPackVersion(configuration))
-                    .SetOutputDirectory($"{ArtifactsDirectory}/SchemaMigrations.Database")
+                    .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Database.Name}")
                     .SetVerbosity(DotNetVerbosity.minimal)
                     .SetPackageReleaseNotes(CreateNugetChangelog()));
 
@@ -33,7 +34,7 @@ partial class Build
                 .SetConfiguration("Generator Release")
                 .SetProject(Solution.SchemaMigrations_Generator)
                 .SetVersion(GeneratorVersion)
-                .SetOutputDirectory($"{ArtifactsDirectory}/SchemaMigrations.Generator")
+                .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Generator.Name}")
                 .SetVerbosity(DotNetVerbosity.minimal));
 
             if (IsLocalBuild)
