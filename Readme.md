@@ -1,25 +1,21 @@
 ## Make your Revit Extensible Storage API experience comfortable 
 
-[![Nuget](https://img.shields.io/nuget/v/Nice3point.Revit.Toolkit?style=for-the-badge)](https://www.nuget.org/packages/Nice3point.Revit.Toolkit)
-[![Downloads](https://img.shields.io/nuget/dt/Nice3point.Revit.Toolkit?style=for-the-badge)](https://www.nuget.org/packages/Nice3point.Revit.Toolkit)
-[![Last Commit](https://img.shields.io/github/last-commit/Nice3point/RevitToolkit/develop?style=for-the-badge)](https://github.com/Nice3point/RevitToolkit/commits/develop)
+[![Nuget](https://img.shields.io/nuget/v/Atomatiq.SchemaMigrations.Database?style=for-the-badge)](https://www.nuget.org/packages/Nice3point.Revit.Toolkit)
+[![Downloads](https://img.shields.io/nuget/dt/Atomatiq.SchemaMigrations.Database?style=for-the-badge)](https://www.nuget.org/packages/Nice3point.Revit.Toolkit)
+[![Last Commit](https://img.shields.io/github/last-commit/atomatiq/SchemaMigrations/develop?style=for-the-badge)](https://github.com/Nice3point/RevitToolkit/commits/develop)
 
 This library provides tools for making Revit Extensible Storage API similar to Entity Framework.
 Define you models, add them to SchemaContext. Run Schema Migration Generator to Create migration. Then save your models 
 in ES and load them from ES as an instances of your Models class, not only a primitive objects.
 
 ## Installation
-**TODO: Change references after publishing**
-
-You can install Toolkit as a [nuget package](https://www.nuget.org/packages/Nice3point.Revit.Toolkit).
+You can install this tool as a [nuget package](https://www.nuget.org/packages/Atomatiq.SchemaMigrations.Database).
 
 Packages are compiled for a specific version of Revit, to support different versions of libraries in one project, use RevitVersion property.
 
 ```text
-<PackageReference Include="Nice3point.Revit.Toolkit" Version="$(RevitVersion).*"/>
+<PackageReference Include="Atomatiq.SchemaMigrations.Database" Version="$(RevitVersion).*"/>
 ```
-
-Package included by default in [Revit Templates](https://github.com/Nice3point/RevitTemplates).
 
 ## Table of contents
 
@@ -68,7 +64,7 @@ public class ApplicationSchemaContext : SchemaContext
 ```
 3. Install SchemaMigrations.Generator tool globally:
 ```powershell
-dotnet install Atomatiq.SchemaMigrations.Generator --global
+dotnet tool install Atomatiq.SchemaMigrations.Generator --global
 ```
 4. Open your terminal and make sure that you are in your Database project folder. Run 'cd Directory'
 to go to Directory. Run 'cd ..' to go to parent directory.
