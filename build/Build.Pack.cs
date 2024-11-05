@@ -12,14 +12,13 @@ partial class Build
         {
             ValidateRelease();
 
-            foreach (var configuration in GlobBuildConfigurations())
-                DotNetPack(settings => settings
-                    .SetConfiguration(configuration)
-                    .SetProject(Solution.SchemaMigrations_Abstractions)
-                    .SetVersion(GetPackVersion(configuration))
-                    .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Abstractions.Name}")
-                    .SetVerbosity(DotNetVerbosity.minimal)
-                    .SetPackageReleaseNotes(CreateNugetChangelog()));
+            DotNetPack(settings => settings
+                .SetConfiguration("Release R21")
+                .SetProject(Solution.SchemaMigrations_Abstractions)
+                .SetVersion(AbstractionVersion)
+                .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Abstractions.Name}")
+                .SetVerbosity(DotNetVerbosity.minimal)
+                .SetPackageReleaseNotes(CreateNugetChangelog()));
 
             foreach (var configuration in GlobBuildConfigurations())
                 DotNetPack(settings => settings

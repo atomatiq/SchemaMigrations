@@ -24,7 +24,7 @@
 
     <ItemGroup>
         <PackageReference Include="Cocona.Lite" Version="2.2.0"/>
-        <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="2025.*"/>
+        <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="1.*"/>
     </ItemGroup>
 
     <ItemGroup>

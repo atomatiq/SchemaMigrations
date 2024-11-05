@@ -53,10 +53,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" PrivateAssets="all" />
+        <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" PrivateAssets="all"/>
         <PackageReference Include="Nice3point.Revit.Api.RevitAPI" Version="$(RevitVersion).*" PrivateAssets="all"/>
         <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" Version="$(RevitVersion).*" PrivateAssets="all"/>
-        <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="$(RevitVersion).*" />
     </ItemGroup>
 
     <ItemGroup>
@@ -65,8 +64,15 @@
         <None Include="..\Readme.md" Link="NuGet\Readme.md" PackagePath="" Pack="true"/>
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\SchemaMigrations.Abstractions\SchemaMigrations.Abstractions.csproj" PrivateAssets="all" />
+    <ItemGroup Condition="'$(IsPackable)' != 'true'">
+        <ProjectReference Include="..\SchemaMigrations.Abstractions\SchemaMigrations.Abstractions.csproj">
+            <PrivateAssets>all</PrivateAssets>
+            <ExcludeAssets>runtime</ExcludeAssets>
+        </ProjectReference>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(IsPackable)' == 'true'">
+        <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="1.0.0"/>
     </ItemGroup>
 
 </Project>

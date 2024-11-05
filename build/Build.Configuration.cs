@@ -21,5 +21,6 @@
         };
         
         GeneratorVersion = "1.0.0";
+        AbstractionVersion = "1.0.0";
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.IO;
+using System.Reflection;
 using Cocona;
 using JetBrains.Annotations;
 
@@ -8,7 +10,10 @@ internal class Program
 {
     internal static void Main(string[] args)
     {
-        CoconaLiteApp.Run(GenerateMigration);
+        CoconaLiteApp.Run(([Argument] string migration, bool noBuild = false) =>
+        {
+            GenerateMigration(migration, noBuild);
+        });
     }
 
     private static void GenerateMigration(string migration, bool noBuild = false)
@@ -32,10 +37,11 @@ internal class Program
 
     private static Assembly? ResolveAssembly(object? sender, ResolveEventArgs args)
     {
+        Console.WriteLine($"{args.Name}");
         var assemblyName = new AssemblyName(args.Name);
 
         var assemblyPath = Path.Combine(Directory.GetParent(args.RequestingAssembly!.Location)!.FullName, assemblyName.Name + ".dll");
-        Console.WriteLine($"Loading assembly: {assemblyPath}");
+        Console.WriteLine($"Loading assembly: {assemblyPath}, {args.RequestingAssembly?.ImageRuntimeVersion}");
         
         return File.Exists(assemblyPath) ? Assembly.LoadFrom(assemblyPath) : null;
     }
