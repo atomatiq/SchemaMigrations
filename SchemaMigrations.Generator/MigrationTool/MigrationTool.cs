@@ -1,16 +1,13 @@
-using System.Diagnostics;
 using System.Reflection;
 using System.Text;
-using JetBrains.Annotations;
 using SchemaMigrations.Abstractions;
 using SchemaMigrations.Abstractions.Models;
 
 namespace SchemaMigrations.Generator.MigrationTool;
 
-[UsedImplicitly]
-public class MigrationTool
+internal static class MigrationTool
 {
-    public static void BuildSolution(string projectPath)
+    internal static void BuildSolution(string projectPath)
     {
         var solutionDir = projectPath;
         Console.OutputEncoding = Encoding.UTF8;
@@ -24,21 +21,11 @@ public class MigrationTool
         }
         
         Console.WriteLine($"Starting building solution for {solutionDir}");
-        
-        var processInfo = new ProcessStartInfo("dotnet", $"build \"{solutionDir}\"")
-        {
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            StandardOutputEncoding = Encoding.UTF8,
-            StandardErrorEncoding = Encoding.UTF8,
-        };
 
-        var process = Process.Start(processInfo);
+        var process = ProcessTasks.StartProcess(solutionDir);
 
-        process!.OutputDataReceived += (sender, e) => Console.WriteLine(e.Data);
-        process.ErrorDataReceived += (sender, e) => Console.WriteLine(e.Data);
+        process.OutputDataReceived += (_, e) => Console.WriteLine(e.Data);
+        process.ErrorDataReceived += (_, e) => Console.WriteLine(e.Data);
 
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
@@ -48,7 +35,7 @@ public class MigrationTool
         Console.WriteLine($"Finished building solution for {solutionDir}");
     }
 
-    public static void AddMigration(string migrationName, string projectPath)
+    internal static void AddMigration(string migrationName, string projectPath)
     {
         Console.WriteLine($"Adding migration: {migrationName}");
         var projectDir = projectPath.Split('\\').Last();

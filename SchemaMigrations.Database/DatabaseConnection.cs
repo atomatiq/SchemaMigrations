@@ -15,7 +15,7 @@ namespace SchemaMigrations.Database;
 public sealed class DatabaseConnection<T>(Element element)
     where T : class, new()
 {
-    private readonly Schema _schema = new Schema<T>().Create(element);
+    private readonly Schema _schema = Schema<T>.Create(element);
 
     /// <summary>
     /// Saves T object in entity of element of this connection, using T object properties one by one
@@ -24,14 +24,11 @@ public sealed class DatabaseConnection<T>(Element element)
     /// <exception cref="System.ArgumentNullException"></exception>
     public void SaveObject(T value)
     {
-        if (element is null)
-            throw new ArgumentNullException(nameof(element));
-
         var objectType = value.GetType();
 
         var properties = objectType.GetProperties();
         var entity = element.GetEntity(_schema);
-        if (entity is null || entity.Schema is null || !entity.IsValidObject)
+        if (entity?.Schema is null || !entity.IsValidObject)
         {
             entity = new Entity(_schema);
         }
@@ -84,9 +81,6 @@ public sealed class DatabaseConnection<T>(Element element)
     /// <exception cref="System.ArgumentNullException"></exception>
     public T LoadObject()
     {
-        if (element is null)
-            throw new ArgumentNullException(nameof(element));
-
         var entity = element.GetEntity(_schema);
         var obj = new T();
         var objType = typeof(T);

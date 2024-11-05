@@ -3,41 +3,62 @@ using SchemaMigrations.Abstractions.Models;
 
 namespace SchemaMigrations.Abstractions;
 
-[UsedImplicitly]
+/// <summary>
+/// The class to collect all the data about all the generated migrations
+/// </summary>
+[PublicAPI]
 public class MigrationBuilder
 {
-    private readonly List<SchemaDescriptor> _schemas = [];
-    private List<SchemaBuilderData> BuildersData { get; } = [];
+    /// <summary>
+    /// List of all the schema descriptors from the generated migrations
+    /// </summary>
+    public List<SchemaDescriptor> Schemas { get; } = [];
 
-    [UsedImplicitly]
+    /// <summary>
+    /// List of base data for schema creation for all the schema descriptors from the generated migrations
+    /// </summary>
+    public List<SchemaBuilderData> BuildersData { get; } = [];
+
+    /// <summary>
+    /// Method created inside the migration to add new schema
+    /// </summary>
     public void AddSchemaData(SchemaBuilderData data, SchemaDescriptor descriptor)
     {
         BuildersData.Add(data);
-        _schemas.Add(descriptor);
+        Schemas.Add(descriptor);
     }
 
-    [UsedImplicitly]
+    /// <summary>
+    /// Method created inside the migration to update guid of schema
+    /// </summary>
     public void UpdateGuid(string schemaName, Guid newGuid)
     {
         BuildersData.First(x => x.Name == schemaName).Guid = newGuid;
     }
 
-    [UsedImplicitly]
-    public void AddColumn(string tableName, string name, Type fieldType)
+    /// <summary>
+    /// Method created inside the migration to add new field to the schema
+    /// </summary>
+    public void AddColumn(string schemaName, string name, Type fieldType)
     {
-        _schemas.First(schema => schema.SchemaName == tableName).AddField(new FieldDescriptor(name, fieldType));
+        Schemas.First(schema => schema.SchemaName == schemaName).AddField(new FieldDescriptor(name, fieldType));
     }
 
-    [UsedImplicitly]
-    public void DropColumn(string tableName, string name)
+    /// <summary>
+    /// Method created inside the migration to remove a field from the schema
+    /// </summary>
+    public void DropColumn(string schemaName, string name)
     {
-        _schemas.First(schema => schema.SchemaName == tableName).RemoveField(name);
+        Schemas.First(schema => schema.SchemaName == schemaName).RemoveField(name);
     }
 
+    /// <summary>
+    /// Method used by generator to check is the migration actual or not
+    /// </summary>
     [UsedImplicitly]
-    public List<FieldDescriptor> GetColumns(string tableName)
+    public List<FieldDescriptor> GetColumns(string schemaName)
     {
-        var schema = _schemas.FirstOrDefault(schema => schema.SchemaName == tableName);
-        return schema is null ? new List<FieldDescriptor>() : schema.Fields;
+        var schema = Schemas.FirstOrDefault(schema => schema.SchemaName == schemaName);
+        return schema is null ? [] : schema.Fields;
     }
 }

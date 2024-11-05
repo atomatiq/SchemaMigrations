@@ -1,14 +1,16 @@
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
+using JetBrains.Annotations;
 using SchemaMigrations.Abstractions;
 using SchemaMigrations.Database.Core;
 
 namespace SchemaMigrations.Database.Schemas;
 
+[UsedImplicitly]
 internal class Schema<T> where T : class
 {
-    internal Schema Create(Element element)
+    internal static Schema Create(Element element)
     {
         var clientAssembly = typeof(T).Assembly;
         

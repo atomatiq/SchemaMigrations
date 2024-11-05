@@ -24,20 +24,24 @@
 
     <ItemGroup>
         <PackageReference Include="Cocona.Lite" Version="2.2.0"/>
-        <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="1.*"/>
+        <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="2025.*"/>
     </ItemGroup>
 
     <ItemGroup>
         <Reference Include="PresentationFramework"/>
         <Reference Include="PresentationCore"/>
         <Reference Include="WindowsBase"/>
-        <PackageReference Include="JetBrains.Annotations" Version="2024.*"/>
+        <PackageReference Include="JetBrains.Annotations" Version="2024.*" PrivateAssets="all"/>
     </ItemGroup>
 
     <ItemGroup>
         <!--        <None Include="..\..\.nuget\PackageIcon.png" Link="NuGet\PackageIcon.png" PackagePath="images\" Pack="true"/>-->
         <None Include="..\License.md" Link="NuGet\License.md" PackagePath="" Pack="true"/>
         <None Include="..\Readme.md" Link="NuGet\Readme.md" PackagePath="" Pack="true"/>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\SchemaMigrations.Abstractions\SchemaMigrations.Abstractions.csproj" PrivateAssets="all" />
     </ItemGroup>
 
 </Project>

@@ -3,16 +3,15 @@ using Cocona;
 using JetBrains.Annotations;
 
 namespace SchemaMigrations.Generator;
-
 [UsedImplicitly]
-public class Program
+internal class Program
 {
-    public static void Main(string[] args)
+    internal static void Main(string[] args)
     {
-        CoconaLiteApp.Run(Run);
+        CoconaLiteApp.Run(GenerateMigration);
     }
 
-    private static void Run(string migration, bool noBuild = false)
+    private static void GenerateMigration(string migration, bool noBuild = false)
     {
         AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
         try
@@ -24,10 +23,10 @@ public class Program
             }
             MigrationTool.MigrationTool.AddMigration(migration, currentDirectory);
         }
-        catch (Exception e)
+        catch
         {
-            Console.WriteLine(e.Message);
-            Console.WriteLine(e.StackTrace);
+            Console.WriteLine("An error occured while creation of the migration. Error info: ");
+            throw;
         }
     }
 

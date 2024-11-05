@@ -2,7 +2,10 @@ using JetBrains.Annotations;
 
 namespace SchemaMigrations.Abstractions;
 
-[UsedImplicitly]
+/// <summary>
+/// Stores all the data to create a new schema
+/// </summary>
+[PublicAPI]
 public class SchemaBuilderData
 {
     public required Guid Guid { get; set; }

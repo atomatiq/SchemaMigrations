@@ -3,13 +3,13 @@ using System.Text;
 
 namespace SchemaMigrations.Generator.MigrationTool;
 
-public class MigrationGenerator(Type modelType)
+internal class MigrationGenerator(Type modelType)
 {
-    private readonly StringBuilder _upBuilder = new();
     private readonly StringBuilder _guidsBuilder = new();
     private readonly string _projectName = modelType.Namespace!.Remove(modelType.Namespace.LastIndexOf('.'));
+    private readonly StringBuilder _upBuilder = new();
 
-    public bool Finish(string migrationName)
+    internal bool Finish(string migrationName)
     {
         if (_upBuilder.Length == 0 && _guidsBuilder.Length == 0)
         {
@@ -37,7 +37,7 @@ public class MigrationGenerator(Type modelType)
         return SaveFile(migrationName, migrationCode);
     }
 
-    public void AddInitialMigration(string schemaName, Type schemaSetType)
+    internal void AddInitialMigration(string schemaName, Type schemaSetType)
     {
         var properties = schemaSetType.GetProperties()
             .ToDictionary(property => property.Name, property => property.PropertyType);
@@ -78,7 +78,7 @@ public class MigrationGenerator(Type modelType)
                             """);
     }
 
-    public void AddMigration(string schemaName, List<string> changes)
+    internal void AddMigration(string schemaName, List<string> changes)
     {
         _guidsBuilder.Append($$"""
                                        { "{{schemaName}}", new Guid("{{Guid.NewGuid()}}") },

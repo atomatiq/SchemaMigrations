@@ -1,8 +1,8 @@
 namespace SchemaMigrations.Generator.MigrationTool;
 
-public static class ChangeDetector
+internal static class ChangeDetector
 {
-    public static List<string> DetectChanges(Type newModelType, string schemaName, Dictionary<string, Type> lastSnapshot)
+    internal static List<string> DetectChanges(Type newModelType, string schemaName, Dictionary<string, Type> lastSnapshot)
     {
         var changes = new List<string>();
         var currentProperties = newModelType.GetProperties()
