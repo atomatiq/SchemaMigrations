@@ -19,6 +19,15 @@ partial class Build
                 .SetVerbosity(DotNetVerbosity.minimal)
                 .SetPackageReleaseNotes(CreateNugetChangelog()));
 
+            if (IsServerBuild)
+            {
+                var artifacts = Directory.GetFiles(ArtifactsDirectory, "*", SearchOption.AllDirectories);
+                foreach (var file in artifacts)
+                {
+                    File.Copy(file, Path.Combine(@"C:\Program Files\dotnet\library-packs", Path.GetFileName(file)), overwrite: true);
+                }
+            }
+
             foreach (var configuration in GlobBuildConfigurations())
                 DotNetPack(settings => settings
                     .SetConfiguration(configuration)

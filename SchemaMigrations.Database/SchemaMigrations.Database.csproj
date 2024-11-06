@@ -64,21 +64,14 @@
         <None Include="..\Readme.md" Link="NuGet\Readme.md" PackagePath="" Pack="true"/>
     </ItemGroup>
 
-    <PropertyGroup>
-        <!-- Check if running in GitHub Actions -->
-        <IsCI Condition="'$(GITHUB_ACTIONS)' == 'true'">true</IsCI>
-    </PropertyGroup>
-
     <ItemGroup>
-        <!-- Use PackageReference in CI environments (like GitHub Actions) to ensure correct version in NuGet package -->
-        <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="1.0.0" Condition="'$(IsCI)' == 'true'" />
+        <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="1.0.0"/>
 
-        <!-- Use ProjectReference locally to avoid needing an installed package -->
-        <ProjectReference Include="..\SchemaMigrations.Abstractions\SchemaMigrations.Abstractions.csproj" Condition="'$(IsCI)' != 'true'">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; buildtransitive</IncludeAssets>
-            <ExcludeAssets>runtime</ExcludeAssets>
-        </ProjectReference>
+<!--        <ProjectReference Include="..\SchemaMigrations.Abstractions\SchemaMigrations.Abstractions.csproj" Condition="'$(IsCI)' == 'true'">-->
+<!--            <PrivateAssets>all</PrivateAssets>-->
+<!--            <IncludeAssets>runtime; build; native; contentfiles; buildtransitive</IncludeAssets>-->
+<!--            <ExcludeAssets>runtime</ExcludeAssets>-->
+<!--        </ProjectReference>-->
     </ItemGroup>
 
 </Project>
