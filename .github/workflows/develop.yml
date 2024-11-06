@@ -1,0 +1,26 @@
+name: Workflow
+
+on:
+  push:
+    branches:
+      - 'develop'
+  pull_request:
+    branches:
+      - '!develop'
+
+jobs:
+  windows:
+    name: windows-latest
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run Nuke Build
+        run: ./.nuke/build.cmd pack
+      - name: ls folders
+        run: ls -a
+      - name: upload result
+        uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: output

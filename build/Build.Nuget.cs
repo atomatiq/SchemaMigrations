@@ -14,7 +14,23 @@ partial class Build
         .OnlyWhenStatic(() => IsLocalBuild && GitRepository.IsOnMainOrMasterBranch())
         .Executes(() =>
         {
-            foreach (var package in ArtifactsDirectory.GlobFiles("*.nupkg"))
+            var abstractionsDirectory = AbsolutePath.Create($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Abstractions.Name}");
+            var databaseDirectory = AbsolutePath.Create($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Database.Name}");
+            var generatorDirectory = AbsolutePath.Create($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Generator.Name}");
+            
+            foreach (var package in abstractionsDirectory.GlobFiles("*.nupkg"))
+                DotNetNuGetPush(settings => settings
+                    .SetTargetPath(package)
+                    .SetSource(NugetApiUrl)
+                    .SetApiKey(NugetApiKey));
+            
+            foreach (var package in databaseDirectory.GlobFiles("*.nupkg"))
+                DotNetNuGetPush(settings => settings
+                    .SetTargetPath(package)
+                    .SetSource(NugetApiUrl)
+                    .SetApiKey(NugetApiKey));
+            
+            foreach (var package in generatorDirectory.GlobFiles("*.nupkg"))
                 DotNetNuGetPush(settings => settings
                     .SetTargetPath(package)
                     .SetSource(NugetApiUrl)

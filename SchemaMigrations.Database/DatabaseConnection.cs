@@ -18,7 +18,7 @@ public sealed class DatabaseConnection<T>(Element element)
     private readonly Schema _schema = Schema<T>.Create(element);
 
     /// <summary>
-    /// Saves T object in entity of element of this connection, using T object properties one by one
+    /// Saves T object in the entity of the element, using T object properties one by one
     /// </summary>
     /// <param name="value"></param>
     /// <exception cref="System.ArgumentNullException"></exception>
@@ -75,7 +75,7 @@ public sealed class DatabaseConnection<T>(Element element)
     }
 
     /// <summary>
-    /// Read information from entity of element of this connection and constructs a new T object with saved values. If there are no entity, returns new T. 
+    /// Read information from the entity of the element and constructs a new T object with saved values. If there is no entity, returns new T. 
     /// </summary>
     /// <returns></returns>
     /// <exception cref="System.ArgumentNullException"></exception>
@@ -130,7 +130,7 @@ public sealed class DatabaseConnection<T>(Element element)
     }
 
     /// <summary>
-    /// found all entities of Database Connection schema and delete them, then calls EraseSchemaAndAllEntities for active document
+    /// found all entities of <see cref="DatabaseConnection{T}"/> schema and delete them, then calls EraseSchemaAndAllEntities for the active document
     /// </summary>
     public void Delete()
     {

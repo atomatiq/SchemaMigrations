@@ -13,7 +13,7 @@ partial class Build
             ValidateRelease();
 
             DotNetPack(settings => settings
-                .SetConfiguration("Release R21")
+                .SetConfiguration("Abstractions Release")
                 .SetProject(Solution.SchemaMigrations_Abstractions)
                 .SetVersion(AbstractionVersion)
                 .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Abstractions.Name}")
@@ -74,6 +74,7 @@ partial class Build
     {
         var configurations = Solution.Configurations
             .Where(pair => !pair.Key.Contains("Generator"))
+            .Where(pair => !pair.Key.Contains("Abstractions"))
             .Select(pair => pair.Key)
             .Select(config => config.Remove(config.LastIndexOf('|')))
             .Where(config => Configurations.Any(wildcard => FileSystemName.MatchesSimpleExpression(wildcard, config)))
