@@ -66,12 +66,6 @@
 
     <ItemGroup>
         <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="1.0.0"/>
-
-<!--        <ProjectReference Include="..\SchemaMigrations.Abstractions\SchemaMigrations.Abstractions.csproj" Condition="'$(IsCI)' == 'true'">-->
-<!--            <PrivateAssets>all</PrivateAssets>-->
-<!--            <IncludeAssets>runtime; build; native; contentfiles; buildtransitive</IncludeAssets>-->
-<!--            <ExcludeAssets>runtime</ExcludeAssets>-->
-<!--        </ProjectReference>-->
     </ItemGroup>
 
 </Project>
