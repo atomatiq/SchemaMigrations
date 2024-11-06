@@ -1,5 +1,4 @@
 ﻿using System.IO.Enumeration;
-using Nuke.Common.Git;
 using Nuke.Common.Tools.DotNet;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
@@ -7,7 +6,7 @@ partial class Build
 {
     Target Pack => definition => definition
         .DependsOn(Clean)
-        .OnlyWhenStatic(() => IsLocalBuild || GitRepository.IsOnMainOrMasterBranch())
+        //.OnlyWhenStatic(() => IsLocalBuild || GitRepository.IsOnMainOrMasterBranch())
         .Executes(() =>
         {
             ValidateRelease();

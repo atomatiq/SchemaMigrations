@@ -1,7 +1,7 @@
 ﻿sealed partial class Build
 {
     Target Clean => definition => definition
-        .OnlyWhenStatic(() => IsLocalBuild)
+        //.OnlyWhenStatic(() => IsLocalBuild)
         .Executes(() =>
         {
             CleanDirectory(ArtifactsDirectory);

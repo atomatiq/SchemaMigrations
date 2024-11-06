@@ -18,7 +18,9 @@ jobs:
       - name: Run Nuke Build
         run: ./.nuke/build.cmd pack
       - name: ls folders
-        run: ls -a
+        run: |
+          pwd
+          ls
       - name: upload result
         uses: actions/upload-artifact@v3
         with:
