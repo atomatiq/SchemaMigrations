@@ -4,9 +4,11 @@
 [![Downloads](https://img.shields.io/nuget/dt/Atomatiq.SchemaMigrations.Database?style=for-the-badge)](https://www.nuget.org/packages/Nice3point.Revit.Toolkit)
 [![Last Commit](https://img.shields.io/github/last-commit/atomatiq/SchemaMigrations/develop?style=for-the-badge)](https://github.com/Nice3point/RevitToolkit/commits/develop)
 
-This library provides tools for making Revit Extensible Storage API similar to Entity Framework.
-Define you models, add them to SchemaContext. Run Schema Migration Generator to Create migration. Then save your models 
-in ES and load them from ES as an instances of your Models class, not only a primitive objects.
+This library provides tools for making Revit **Extensible Storage** API similar to Entity Framework.
+Define your models, add them to **SchemaContext**.
+Run **Schema Migration Generator** to create migration.
+Then save your models 
+in ES and load them from ES as instances of your Models class, not only primitive objects.
 
 ## Installation
 You can install this tool as a [nuget package](https://www.nuget.org/packages/Atomatiq.SchemaMigrations.Database).
@@ -30,16 +32,17 @@ Packages are compiled for a specific version of Revit, to support different vers
 Create a solution for your Revit Application. You can use Nice3Point [Revit Templates](https://github.com/Nice3point/RevitTemplates),
 but it is not mandatory.
 
-You should create one project for you solution which will be responsible for working with Extensible Storage (next: Database project).
-Other project would have references on it if they need.
+You should create one project for your solution which will be responsible for working with Extensible Storage (next: **Database project**).
+Other projects would have references on it if they needed.
 
-Add reference to nuget-package SchemaMigrations.Database in Database project. You should use version of package according your Revit Version,
+Add reference to nuget-package SchemaMigrations.Database in the **Database project**.
+You should use the version of the package according to your Revit Version,
 or simply change your .csproj like this if you are using Nice3Point or similar template:
 ```xml
 <PackageReference Include="Atomatiq.SchemaMigrations.Database" Version="$(RevitVersion).*" />
 ```
 
-1. Create Models folder and define your Model:
+1. Create Models folder and define your **Model**:
 
 ```c#
 public class Person
@@ -53,31 +56,32 @@ public class Person
 }
 ```
 
-You can have maximum 256 properties in your model class. The supported property types are Boolean, Byte, Int16, Int32, Float, Double, ElementId, GUID, String, XYZ, UV and Entity.
+You can have a maximum of 256 properties in your model class. The supported property types are Boolean, Byte, Int16, Int32, Float, Double, ElementId, GUID, String, XYZ, UV and Entity.
 
-2. Create an implementation of SchemaContext class and add a SchemaSet<T> for every model class:
+2. Create an implementation of **SchemaContext** class and add a **SchemaSet<T>** for every model class:
 ```c#
 public class ApplicationSchemaContext : SchemaContext
 {
     public SchemaSet<Person> Persons { get; set; } = [];
 }
 ```
-3. Install SchemaMigrations.Generator tool globally:
+3. Install **SchemaMigrations.Generator** tool globally:
 ```powershell
 dotnet tool install Atomatiq.SchemaMigrations.Generator --global
 ```
-4. Open your terminal and make sure that you are in your Database project folder. Run 'cd Directory'
-to go to Directory. Run 'cd ..' to go to parent directory.
+4. Open your terminal and make sure that you are in your Database project folder. Run `cd Directory`
+to go to Directory. Run `cd ..` to go to parent directory.
 
 5. Run the following command in terminal:
 ```powershell
 schema-migration-add InitialMigration
 ```
-This command will build your solution to affect all the changes and after that start adding a migration. If you do not want to build, add '--no-build' flag:
+This command will build your solution to affect all the changes and after that start adding a migration.
+If you do not want to build, add `--no-build` flag:
 ```powershell
 schema-migration-add InitialMigration --no-build
 ```
-The command will create a Migrations folder (if needed) and a first migration class called "InitialMigration_{datetime_stamp}":
+The command will create a Migrations folder (if needed) and a first migration class called `InitialMigration_{datetime_stamp}`:
 ```c#
 using SchemaMigrations.Abstractions;
 using SchemaMigrations.Database.Schemas;
@@ -121,15 +125,7 @@ Now you are all set to create your first schema.
 
 ### Save data to schema and load data from schema
 
-Add reference to nuget-package SchemaMigrations.Database in Database project. You should use version of package according your Revit Version,
-or simply change your .csproj like this if you are using Nice3Point or similar template:
-```xml
-<PackageReference Include="SchemaMigrations.Database" Version="$(RevitVersion).*" />
-``` 
-
-Also, you will need a reference to your database project.
-
-For saving and loading data you always need an element. Considering you have one, right this code to save a Person object to it:
+For saving and loading data, you always need an element. Considering you have one, right this code to save a **Person** object to it:
 ```c#
 using var transaction = new Transaction(instance.Document, "Seeding database");
 transaction.Start();
@@ -152,8 +148,8 @@ connection.SaveObject(person);
 transaction.Commit();
 ```
 
-That's it! Now your element contains entity of Person schema with 6 fields. 
-To load an object from this element, just use **LoadObject()**:
+That's it! Now your element contains entity of **Person** schema with six fields. 
+To load an object from this element, use **LoadObject()**:
 ```c#
 var connection = new DatabaseConnection<Person>(instance);
 var existedPerson = connection.LoadObject(); // connection is generic DatabaseConnection<Person>, so it will return correct type
@@ -162,12 +158,12 @@ var existedPerson = connection.LoadObject(); // connection is generic DatabaseCo
 ### Add changes to your schema
 
 If you need to add more objects to your schema context, it is not an issue anymore. 
-Just add new SchemaSets to your SchemaContext, or modify your models as you need.
-SchemaMigrations.Generator will create new migrations, and SchemaMigrations.Database package will create a new schema
+Add new **SchemaSet** to your **SchemaContext**, or modify your models as you need.
+**SchemaMigrations.Generator** will create new migrations, and **SchemaMigrations.Database** package will create a new schema
 according to new migrations, move all the existing data from old schema to the new one for all the elements, and then delete all the entities of old schema.
 
-#### How does it work
-Let's add a new Model class, Instrument, and SchemaSet of it to our SchemaContext, and modify the person class: remove the occupation and add the height.
+#### How does it work?
+Let's add a new Model class, **Instrument**, and **SchemaSet** of it to our **SchemaContext**, and modify the **Person** class: remove the occupation and add the height.
 ```c#
 public class Instrument
 {
@@ -197,7 +193,7 @@ public class ApplicationSchemaContext : SchemaContext
 
 Then build a project and add new migration.
 
-Go to your Database project folder in terminal and run the same command:
+Go to your **Database** project folder in the terminal and run the same command:
 ```powershell
 AddSchemaMigration SecondMigration ${PWD}
 ```
@@ -235,10 +231,11 @@ public class SecondMigraion_20241011_1122 : Migration
     }    
 }
 ```
-It generated new guid values, Add and Drop Columns commands, and added a new Schema. Great. 
-Now you can create database connection of Person and of Instrument as in previous chapter
+It generated new guid values, **Add** and **Drop Columns** commands, and added a new **Schema**.
+Great! 
+Now you can create database connection of **Person** and of **Instrument** as in the previous chapter
 
 #### Supported commands
 
-Migration generator now supports adding new schemas, adding columns to schemas and deleting column from schemas
-It can not change type of property or delete existing schema now
+Migration generator now supports adding new schemas, adding columns to schemas and deleting columns from schemas
+It cannot change the type of property or delete existing schema now
