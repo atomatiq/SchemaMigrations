@@ -130,6 +130,39 @@ public sealed class DatabaseConnection<T>(Element element)
     }
 
     /// <summary>
+    ///     Saves the specified value associated with a field in the database.
+    /// </summary>
+    /// <typeparam name="TProperty">The type of the value to be saved.</typeparam>
+    /// <param name="field">The field name in which to save the value.</param>
+    /// <param name="value">The value to be saved.</param>
+    public void SaveProperty<TProperty>(string field, TProperty value)
+    {
+        if (value is null) return;
+        
+        var entity = element.GetEntity(_schema);
+        if (entity?.Schema is null || !entity.IsValidObject)
+        {
+            entity = new Entity(_schema);
+        }
+        entity.Set(field, value);
+        element.SetEntity(entity);
+    }
+
+    /// <summary>
+    /// Loads the value associated with the specified field from the database.
+    /// </summary>
+    /// <typeparam name="TProperty">The type of the value to be loaded.</typeparam>
+    /// <param name="fieldName">The field name from which to load the value.</param>
+    /// <returns>The value loaded from the database.</returns>
+    [Pure]
+    public TProperty? Load<TProperty>(string fieldName)
+    {
+        var field = _schema.GetField(fieldName);
+        var entity = element.GetEntity(_schema);
+        return entity is null || field is null ? default : entity.Get<TProperty>(field);
+    }
+
+    /// <summary>
     /// found all entities of <see cref="DatabaseConnection{T}"/> schema and delete them, then calls EraseSchemaAndAllEntities for the active document
     /// </summary>
     public void Delete()
