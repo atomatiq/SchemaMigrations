@@ -20,28 +20,34 @@ partial class Build
                 .SetVerbosity(DotNetVerbosity.minimal)
                 .SetPackageReleaseNotes(CreateNugetChangelog()));
 
-            DotNetNuGetAddSource(settings => settings
-                .SetName("TempSource")
-                .SetSource(ArtifactsDirectory));
+            try // we must guarantee that added source will be removed in finally
+            {
+                DotNetNuGetAddSource(settings => settings
+                    .SetName("TempSource")
+                    .SetSource(ArtifactsDirectory));
 
-            foreach (var configuration in GlobBuildConfigurations())
+                foreach (var configuration in GlobBuildConfigurations())
+                    DotNetPack(settings => settings
+                        .SetConfiguration(configuration)
+                        .SetProject(Solution.SchemaMigrations_Database)
+                        .SetVersion(GetPackVersion(configuration))
+                        .SetProperty("PackEnabled", true)
+                        .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Database.Name}")
+                        .SetVerbosity(DotNetVerbosity.minimal)
+                        .SetPackageReleaseNotes(CreateNugetChangelog()));
+
                 DotNetPack(settings => settings
-                    .SetConfiguration(configuration)
-                    .SetProject(Solution.SchemaMigrations_Database)
-                    .SetVersion(GetPackVersion(configuration))
+                    .SetConfiguration("Generator Release")
+                    .SetProject(Solution.SchemaMigrations_Generator)
+                    .SetVersion(GeneratorVersion)
                     .SetProperty("PackEnabled", true)
-                    .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Database.Name}")
-                    .SetVerbosity(DotNetVerbosity.minimal)
-                    .SetPackageReleaseNotes(CreateNugetChangelog()));
-
-            DotNetPack(settings => settings
-                .SetConfiguration("Generator Release")
-                .SetProject(Solution.SchemaMigrations_Generator)
-                .SetVersion(GeneratorVersion)
-                .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Generator.Name}")
-                .SetVerbosity(DotNetVerbosity.minimal));
-
-            using var process = ProcessTasks.StartProcess(DotNetPath, arguments: "dotnet nuget remove source TempSource");
+                    .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Generator.Name}")
+                    .SetVerbosity(DotNetVerbosity.minimal));
+            }
+            finally
+            {
+                using var process = ProcessTasks.StartProcess(DotNetPath, arguments: "dotnet nuget remove source TempSource");
+            }
         });
 
     string GetPackVersion(string configuration)

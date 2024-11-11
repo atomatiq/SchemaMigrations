@@ -37,7 +37,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SchemaMigrations.Abstractions\SchemaMigrations.Abstractions.csproj"/>
+        <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="1.*" Condition="'$(PackEnabled)' == 'true'"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SchemaMigrations.Abstractions\SchemaMigrations.Abstractions.csproj" PrivateAssets="all" Condition="'$(PackEnabled)' != 'true'"/>
     </ItemGroup>
 
 </Project>
