@@ -1,4 +1,5 @@
-name: Workflow
+name: Develop
+run-name: Test Pack and artifacts creation
 
 on:
   push:
@@ -16,11 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Run Nuke Build
-        run: ./.nuke/build.cmd pack
-      - name: ls folders
-        run: |
-          pwd
-          ls
+        run: ./.nuke/build.cmd pack      
       - name: upload result
         uses: actions/upload-artifact@v3
         with:
