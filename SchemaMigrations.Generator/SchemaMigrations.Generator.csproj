@@ -12,7 +12,7 @@
     <PropertyGroup>
         <PackageType>Tool</PackageType>
         <PackageId>Atomatiq.SchemaMigrations.Generator</PackageId>
-        <Authors>Atomatiq</Authors>
+        <Authors>Atomatiq; Sergei Nefedov</Authors>
         <Description>Migration generator for SchemaMigrations.Database</Description>
         <PackageTags>revit;schema</PackageTags>
         <RepositoryType>git</RepositoryType>
@@ -24,7 +24,6 @@
 
     <ItemGroup>
         <PackageReference Include="Cocona.Lite" Version="2.2.0"/>
-        <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="1.*"/>
     </ItemGroup>
 
     <ItemGroup>

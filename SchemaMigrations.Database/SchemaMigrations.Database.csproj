@@ -13,7 +13,7 @@
     <PropertyGroup>
         <PackageType>Dependency</PackageType>
         <PackageId>Atomatiq.SchemaMigrations.Database</PackageId>
-        <Authors>Atomatiq</Authors>
+        <Authors>Atomatiq; Sergei Nefedov</Authors>
         <Description>A tool for comfortable work with extensible Storage in Revit API</Description>
         <PackageTags>revit;schema</PackageTags>
         <RepositoryType>git</RepositoryType>
