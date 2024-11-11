@@ -20,21 +20,9 @@ partial class Build
                 .SetVerbosity(DotNetVerbosity.minimal)
                 .SetPackageReleaseNotes(CreateNugetChangelog()));
 
-            if (IsLocalBuild)
-            {
-                DotNetNuGetAddSource(settings => settings
-                    .SetName("TempSource")
-                    .SetSource(ArtifactsDirectory));
-            }
-
-            if (IsServerBuild)
-            {
-                var artifacts = Directory.GetFiles(ArtifactsDirectory, "*", SearchOption.AllDirectories);
-                foreach (var file in artifacts)
-                {
-                    File.Copy(file, Path.Combine(@"C:\Program Files\dotnet\library-packs", Path.GetFileName(file)), overwrite: true);
-                }
-            }
+            DotNetNuGetAddSource(settings => settings
+                .SetName("TempSource")
+                .SetSource(ArtifactsDirectory));
 
             foreach (var configuration in GlobBuildConfigurations())
                 DotNetPack(settings => settings
@@ -52,10 +40,7 @@ partial class Build
                 .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Generator.Name}")
                 .SetVerbosity(DotNetVerbosity.minimal));
 
-            if (IsLocalBuild)
-            {
-                using var process = ProcessTasks.StartProcess(DotNetPath, arguments: "dotnet nuget remove source TempSource");
-            }
+            using var process = ProcessTasks.StartProcess(DotNetPath, arguments: "dotnet nuget remove source TempSource");
         });
 
     string GetPackVersion(string configuration)
