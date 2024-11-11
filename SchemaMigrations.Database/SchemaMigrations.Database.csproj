@@ -64,16 +64,12 @@
         <None Include="..\Readme.md" Link="NuGet\Readme.md" PackagePath="" Pack="true"/>
     </ItemGroup>
 
-    <PropertyGroup>
-        <IsCI Condition="'$(GITHUB_ACTIONS)' == 'true'">true</IsCI>
-    </PropertyGroup>
-
     <ItemGroup>
-        <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="1.*" Condition="'$(IsCI)' == 'true'"/>
+        <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="1.*" Condition="'$(PackEnabled)' == 'true'"/>
     </ItemGroup>
     
     <ItemGroup>
-        <ProjectReference Include="..\SchemaMigrations.Abstractions\SchemaMigrations.Abstractions.csproj" PrivateAssets="all" Condition="'$(IsCI)' != 'true'"/>
+        <ProjectReference Include="..\SchemaMigrations.Abstractions\SchemaMigrations.Abstractions.csproj" PrivateAssets="all" Condition="'$(PackEnabled)' != 'true'"/>
     </ItemGroup>
 
 </Project>

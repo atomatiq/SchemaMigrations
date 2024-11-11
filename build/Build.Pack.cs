@@ -29,6 +29,7 @@ partial class Build
                     .SetConfiguration(configuration)
                     .SetProject(Solution.SchemaMigrations_Database)
                     .SetVersion(GetPackVersion(configuration))
+                    .SetProperty("PackEnabled", true)
                     .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Database.Name}")
                     .SetVerbosity(DotNetVerbosity.minimal)
                     .SetPackageReleaseNotes(CreateNugetChangelog()));
