@@ -65,7 +65,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="1.0.0"/>
+        <PackageReference Include="Atomatiq.SchemaMigrations.Abstractions" Version="1.*"/>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\SchemaMigrations.Abstractions\SchemaMigrations.Abstractions.csproj" PrivateAssets="all"/>
     </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using System.IO.Enumeration;
+using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
@@ -19,14 +20,9 @@ partial class Build
                 .SetVerbosity(DotNetVerbosity.minimal)
                 .SetPackageReleaseNotes(CreateNugetChangelog()));
 
-            if (IsServerBuild)
-            {
-                var artifacts = Directory.GetFiles(ArtifactsDirectory, "*", SearchOption.AllDirectories);
-                foreach (var file in artifacts)
-                {
-                    File.Copy(file, Path.Combine(@"C:\Program Files\dotnet\library-packs", Path.GetFileName(file)), overwrite: true);
-                }
-            }
+            DotNetNuGetAddSource(settings => settings
+                .SetName("TempSource")
+                .SetSource(ArtifactsDirectory));
 
             foreach (var configuration in GlobBuildConfigurations())
                 DotNetPack(settings => settings
@@ -44,14 +40,7 @@ partial class Build
                 .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Generator.Name}")
                 .SetVerbosity(DotNetVerbosity.minimal));
 
-            if (IsLocalBuild)
-            {
-                var artifacts = Directory.GetFiles(ArtifactsDirectory, "*", SearchOption.AllDirectories);
-                foreach (var file in artifacts)
-                {
-                    File.Copy(file, Path.Combine(RootDirectory, "packages", Path.GetFileName(file)), overwrite: true);
-                }
-            }
+            using var process = ProcessTasks.StartProcess(DotNetPath, arguments: "dotnet nuget remove source TempSource");
         });
 
     string GetPackVersion(string configuration)

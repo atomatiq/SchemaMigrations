@@ -28,9 +28,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="PresentationFramework"/>
-        <Reference Include="PresentationCore"/>
-        <Reference Include="WindowsBase"/>
         <PackageReference Include="JetBrains.Annotations" Version="2024.*" PrivateAssets="all"/>
     </ItemGroup>
 
@@ -41,7 +38,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SchemaMigrations.Abstractions\SchemaMigrations.Abstractions.csproj" PrivateAssets="all"/>
+        <ProjectReference Include="..\SchemaMigrations.Abstractions\SchemaMigrations.Abstractions.csproj"/>
     </ItemGroup>
 
 </Project>
