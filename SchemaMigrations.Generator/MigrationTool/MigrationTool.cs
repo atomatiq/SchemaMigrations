@@ -126,11 +126,11 @@ internal static class MigrationTool
 
     private static Dictionary<string, Type> FindModelTypes(Assembly assembly)
     {
-        var contextType = assembly.GetTypes().Single(type => type.IsSubclassOf(typeof(SchemaContext)));
+        var contextTypes = assembly.GetTypes().Where(type => type.IsSubclassOf(typeof(SchemaContext)));
 
         var typesDictionary = new Dictionary<string, Type>();
-        var propertyInfos = contextType
-            .GetProperties()
+        var propertyInfos = contextTypes
+            .SelectMany(type => type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
             .Where(property => property.PropertyType.GetGenericTypeDefinition() == typeof(SchemaSet<>));
 
         foreach (var propertyInfo in propertyInfos)

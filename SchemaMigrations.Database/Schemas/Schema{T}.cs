@@ -60,12 +60,12 @@ internal class Schema<T> where T : class
 
     private static string GetSchemaName(Assembly clientAssembly)
     {
-        var schemaContextType = clientAssembly.GetTypes().Single(type => type.IsSubclassOf(typeof(SchemaContext)));
-
-        var propertyInfos = schemaContextType
-            .GetProperties()
-            .Where(property => property.PropertyType.GetGenericTypeDefinition() == typeof(SchemaSet<>));
-        var type = propertyInfos.First(info => info.PropertyType.GetGenericArguments()[0] == typeof(T));
+        var schemaContextType = clientAssembly.GetTypes().Where(type => type.IsSubclassOf(typeof(SchemaContext)));
+        
+        var type = schemaContextType
+            .SelectMany(type => type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+            .Where(property => property.PropertyType.GetGenericTypeDefinition() == typeof(SchemaSet<>))
+            .First(info => info.PropertyType.GetGenericArguments()[0] == typeof(T));
 
         var schemaName = type.Name;
         return schemaName;
