@@ -1,8 +1,8 @@
 ## Make your Revit Extensible Storage API experience comfortable 
 
-[![Nuget](https://img.shields.io/nuget/v/Atomatiq.SchemaMigrations.Database?style=for-the-badge)](https://www.nuget.org/packages/Nice3point.Revit.Toolkit)
-[![Downloads](https://img.shields.io/nuget/dt/Atomatiq.SchemaMigrations.Database?style=for-the-badge)](https://www.nuget.org/packages/Nice3point.Revit.Toolkit)
-[![Last Commit](https://img.shields.io/github/last-commit/atomatiq/SchemaMigrations/develop?style=for-the-badge)](https://github.com/Nice3point/RevitToolkit/commits/develop)
+[![Nuget](https://img.shields.io/nuget/v/Atomatiq.SchemaMigrations.Database?style=for-the-badge)](https://www.nuget.org/packages/Atomatiq.SchemaMigrations.Database)
+[![Downloads](https://img.shields.io/nuget/dt/Atomatiq.SchemaMigrations.Database?style=for-the-badge)](https://www.nuget.org/packages/Atomatiq.SchemaMigrations.Database)
+[![Last Commit](https://img.shields.io/github/last-commit/atomatiq/SchemaMigrations/develop?style=for-the-badge)](https://github.com/atomatiq/SchemaMigrations/commits/develop)
 
 This library provides tools for making Revit **Extensible Storage** API similar to Entity Framework.
 Define your models, add them to **SchemaContext**.

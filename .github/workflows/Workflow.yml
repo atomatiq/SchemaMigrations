@@ -17,5 +17,4 @@ jobs:
         uses: actions/checkout@v4
       - name: Publish Nuget
         run: ./.nuke/build.cmd NuGetPush --NugetApiKey ${{ secrets.NUGET_TOKEN }}
-      - name: Publish GitHub
-        run: ./.nuke/build.cmd PublishGitHub --GitHubToken ${{ secrets.GITHUB_TOKEN }}
+      

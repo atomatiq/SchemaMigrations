@@ -21,6 +21,7 @@
         <PackageProjectUrl>https://github.com/atomatiq/SchemaMigrations</PackageProjectUrl>
         <PackageLicenseFile>License.md</PackageLicenseFile>
         <PackageReadmeFile>Readme.md</PackageReadmeFile>
+        <PackageIcon>images\PackageIcon.png</PackageIcon>
     </PropertyGroup>
 
     <PropertyGroup Condition="$(Configuration.Contains('R21'))">
