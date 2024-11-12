@@ -15,5 +15,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Run Nuke Build
+      - name: Publish Nuget
+        run: ./.nuke/build.cmd NuGetPush --GitHubToken ${{ secrets.NUGET_TOKEN }}
+      - name: Publish GitHub
         run: ./.nuke/build.cmd PublishGitHub --GitHubToken ${{ secrets.GITHUB_TOKEN }}
