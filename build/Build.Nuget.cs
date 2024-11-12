@@ -11,7 +11,7 @@ partial class Build
     Target NuGetPush => definition => definition
         .DependsOn(Pack)
         .Requires(() => NugetApiKey)
-        .OnlyWhenStatic(() => IsLocalBuild && GitRepository.IsOnMainOrMasterBranch())
+        .OnlyWhenStatic(() => IsLocalBuild || GitRepository.IsOnMainOrMasterBranch())
         .Executes(() =>
         {
             var abstractionsDirectory = AbsolutePath.Create($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Abstractions.Name}");
