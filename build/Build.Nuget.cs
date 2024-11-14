@@ -17,24 +17,33 @@ partial class Build
             var abstractionsDirectory = AbsolutePath.Create($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Abstractions.Name}");
             var databaseDirectory = AbsolutePath.Create($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Database.Name}");
             var generatorDirectory = AbsolutePath.Create($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Generator.Name}");
-            
-            foreach (var package in abstractionsDirectory.GlobFiles("*.nupkg"))
-                DotNetNuGetPush(settings => settings
-                    .SetTargetPath(package)
-                    .SetSource(NugetApiUrl)
-                    .SetApiKey(NugetApiKey));
-            
-            foreach (var package in databaseDirectory.GlobFiles("*.nupkg"))
-                DotNetNuGetPush(settings => settings
-                    .SetTargetPath(package)
-                    .SetSource(NugetApiUrl)
-                    .SetApiKey(NugetApiKey));
-            
-            foreach (var package in generatorDirectory.GlobFiles("*.nupkg"))
-                DotNetNuGetPush(settings => settings
-                    .SetTargetPath(package)
-                    .SetSource(NugetApiUrl)
-                    .SetApiKey(NugetApiKey));
+
+            if (All || Abstractions)
+            {
+                foreach (var package in abstractionsDirectory.GlobFiles("*.nupkg"))
+                    DotNetNuGetPush(settings => settings
+                        .SetTargetPath(package)
+                        .SetSource(NugetApiUrl)
+                        .SetApiKey(NugetApiKey));
+            }
+
+            if (All || Database)
+            {
+                foreach (var package in databaseDirectory.GlobFiles("*.nupkg"))
+                    DotNetNuGetPush(settings => settings
+                        .SetTargetPath(package)
+                        .SetSource(NugetApiUrl)
+                        .SetApiKey(NugetApiKey));
+            }
+
+            if (All || Generator)
+            {
+                foreach (var package in generatorDirectory.GlobFiles("*.nupkg"))
+                    DotNetNuGetPush(settings => settings
+                        .SetTargetPath(package)
+                        .SetSource(NugetApiUrl)
+                        .SetApiKey(NugetApiKey));
+            }
         });
 
     Target NuGetDelete => definition => definition
