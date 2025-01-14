@@ -1,4 +1,6 @@
 using System.Reflection;
+using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.ExtensibleStorage;
 using SchemaMigrations.Abstractions;
 
 namespace SchemaMigrations.Database.Core;
