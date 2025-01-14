@@ -5,20 +5,27 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 partial class Build
 {
+    [Parameter] readonly bool Abstractions;
+    [Parameter] readonly bool All;
+    [Parameter] readonly bool Database;
+    [Parameter] readonly bool Generator;
+
     Target Pack => definition => definition
         .DependsOn(Clean)
         //.OnlyWhenStatic(() => IsLocalBuild || GitRepository.IsOnMainOrMasterBranch())
         .Executes(() =>
         {
             ValidateRelease();
-
-            DotNetPack(settings => settings
-                .SetConfiguration("Abstractions Release")
-                .SetProject(Solution.SchemaMigrations_Abstractions)
-                .SetVersion(AbstractionVersion)
-                .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Abstractions.Name}")
-                .SetVerbosity(DotNetVerbosity.minimal)
-                .SetPackageReleaseNotes(CreateNugetChangelog()));
+            if (All || Abstractions)
+            {
+                DotNetPack(settings => settings
+                    .SetConfiguration("Abstractions Release")
+                    .SetProject(Solution.SchemaMigrations_Abstractions)
+                    .SetVersion(AbstractionVersion)
+                    .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Abstractions.Name}")
+                    .SetVerbosity(DotNetVerbosity.minimal)
+                    .SetPackageReleaseNotes(CreateNugetChangelog()));
+            }
 
             try // we must guarantee that added source will be removed in finally
             {
@@ -26,23 +33,29 @@ partial class Build
                     .SetName("TempSource")
                     .SetSource(ArtifactsDirectory));
 
-                foreach (var configuration in GlobBuildConfigurations())
-                    DotNetPack(settings => settings
-                        .SetConfiguration(configuration)
-                        .SetProject(Solution.SchemaMigrations_Database)
-                        .SetVersion(GetPackVersion(configuration))
-                        .SetProperty("PackEnabled", true)
-                        .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Database.Name}")
-                        .SetVerbosity(DotNetVerbosity.minimal)
-                        .SetPackageReleaseNotes(CreateNugetChangelog()));
+                if (All || Database)
+                {
+                    foreach (var configuration in GlobBuildConfigurations())
+                        DotNetPack(settings => settings
+                            .SetConfiguration(configuration)
+                            .SetProject(Solution.SchemaMigrations_Database)
+                            .SetVersion(GetPackVersion(configuration))
+                            .SetProperty("PackEnabled", true)
+                            .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Database.Name}")
+                            .SetVerbosity(DotNetVerbosity.minimal)
+                            .SetPackageReleaseNotes(CreateNugetChangelog()));
+                }
 
-                DotNetPack(settings => settings
-                    .SetConfiguration("Generator Release")
-                    .SetProject(Solution.SchemaMigrations_Generator)
-                    .SetVersion(GeneratorVersion)
-                    .SetProperty("PackEnabled", true)
-                    .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Generator.Name}")
-                    .SetVerbosity(DotNetVerbosity.minimal));
+                if (All || Generator)
+                {
+                    DotNetPack(settings => settings
+                        .SetConfiguration("Generator Release")
+                        .SetProject(Solution.SchemaMigrations_Generator)
+                        .SetVersion(GeneratorVersion)
+                        .SetProperty("PackEnabled", true)
+                        .SetOutputDirectory($"{ArtifactsDirectory}/{Solution.SchemaMigrations_Generator.Name}")
+                        .SetVerbosity(DotNetVerbosity.minimal));
+                }
             }
             finally
             {

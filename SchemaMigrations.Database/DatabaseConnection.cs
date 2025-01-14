@@ -130,6 +130,34 @@ public sealed class DatabaseConnection<T>(Element element)
     }
 
     /// <summary>
+    /// Checks is there an existing object in the schema
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="System.ArgumentNullException"></exception>
+    public bool HasObject()
+    {
+        var entity = element.GetEntity(_schema);
+
+        return entity is { IsValidObject: true, Schema.IsValidObject: true };
+    }
+
+    /// <summary>
+    /// Deletes data from current element
+    /// </summary>
+    /// <exception cref="System.ArgumentNullException"></exception>
+    public void DeleteObject()
+    {
+        var entity = element.GetEntity(_schema);
+
+        if (entity is null || !entity.IsValidObject || entity.Schema is null || !entity.Schema.IsValidObject)
+        {
+            return;
+        }
+
+        element.DeleteEntity(_schema);
+    }
+
+    /// <summary>
     ///     Saves the specified value associated with a field in the database.
     /// </summary>
     /// <typeparam name="TProperty">The type of the value to be saved.</typeparam>
@@ -155,7 +183,7 @@ public sealed class DatabaseConnection<T>(Element element)
     /// <param name="fieldName">The field name from which to load the value.</param>
     /// <returns>The value loaded from the database.</returns>
     [Pure]
-    public TProperty? Load<TProperty>(string fieldName)
+    public TProperty? LoadProperty<TProperty>(string fieldName)
     {
         var field = _schema.GetField(fieldName);
         var entity = element.GetEntity(_schema);

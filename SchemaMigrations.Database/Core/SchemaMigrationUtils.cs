@@ -1,6 +1,4 @@
 using System.Reflection;
-using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.ExtensibleStorage;
 using SchemaMigrations.Abstractions;
 
 namespace SchemaMigrations.Database.Core;
@@ -110,11 +108,21 @@ internal static class SchemaMigrationUtils
             var genericSetMethod = MakeGenericInvoker(field, setMethod);
             var genericGetMethod = MakeGenericInvoker(field, getMethod);
             var value = genericGetMethod.Invoke(firstEntity, [field]);
+            var newField = secondEntity.Schema.ListFields().FirstOrDefault(f => IsSimilar(f, field) );
+            if (newField is null) return;
             genericSetMethod.Invoke(secondEntity, [field.FieldName, value]);
         }
 
         element.SetEntity(secondEntity);
         element.DeleteEntity(firstEntity.Schema);
+    }
+
+    private static bool IsSimilar(Field field, Field other)
+    {
+        return field.FieldName == other.FieldName
+            && field.ValueType == other.ValueType
+            && field.KeyType == other.KeyType
+            && field.CompatibleUnit(other.GetSpecTypeId());
     }
 
     private static MethodInfo MakeGenericInvoker(Field field, MethodInfo invoker)
