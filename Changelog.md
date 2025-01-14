@@ -8,3 +8,7 @@
 # Release 2025.0.2
 
 - Add HasObjects() and DeleteObject() methods
+- 
+# Release 2025.0.3
+
+- Fix bug when we have a new field with the same name as some new field, but different type
