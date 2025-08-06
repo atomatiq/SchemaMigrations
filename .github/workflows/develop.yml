@@ -19,7 +19,7 @@ jobs:
       - name: Run Nuke Build
         run: ./.nuke/build.cmd pack      
       - name: upload result
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: output
           path: output
