@@ -8,4 +8,4 @@ namespace SchemaMigrations.Abstractions.Models;
 /// <param name="Name">Field Name</param>
 /// <param name="Type">Field Type</param>
 [PublicAPI]
-public record FieldDescriptor(string Name, Type Type);
+public record FieldDescriptor(string Name, Type Type, string SpecTypeId = "", string UnitTypeId = "");

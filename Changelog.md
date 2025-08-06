@@ -12,3 +12,11 @@
 # Release 2025.0.3
 
 - Fix bug when we have a new field with the same name as some new field, but different type
+- 
+# Release 2026.0.0
+
+- Add support for Revit 2026
+- 
+# Release 2026.0.5
+
+- Add support for doubles and units

@@ -1,6 +1,8 @@
+using System.Reflection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using JetBrains.Annotations;
+using SchemaMigrations.Abstractions.Attributes;
 using SchemaMigrations.Database.Core;
 using SchemaMigrations.Database.Schemas;
 
@@ -39,8 +41,9 @@ public sealed class DatabaseConnection<T>(Element element)
             var propertyValue = property.GetValue(value);
             if (propertyValue == null) continue;
 
-            var propertyType = property.PropertyType;
-            var method = entity.GetType()
+            var attribute = property.GetCustomAttribute<UnitAttribute>();
+
+            var methodGetByName = entity.GetType()
                 .GetMethods().FirstOrDefault(methodInfo =>
                 {
                     if (methodInfo.Name != nameof(Entity.Set)) return false;
@@ -49,26 +52,27 @@ public sealed class DatabaseConnection<T>(Element element)
                            parameters[0].ParameterType == typeof(string) &&
                            parameters[1].ParameterType.IsGenericParameter;
                 })!;
+            var methodGetByNameAndUnits = entity.GetType()
+                .GetMethods().FirstOrDefault(methodInfo =>
+                {
+                    if (methodInfo.Name != nameof(Entity.Set)) return false;
+                    var parameters = methodInfo.GetParameters();
+                    return parameters.Length == 3 &&
+                           parameters[0].ParameterType == typeof(string) &&
+                           parameters[1].ParameterType.IsGenericParameter &&
+                           parameters[2].ParameterType == typeof(ForgeTypeId);
+                })!;
 
-            if (propertyType.IsGenericType)
+            var propertyType = GetPropertyType(property);
+
+            if (attribute is null)
             {
-                var genericTypeDefinition = propertyType.GetGenericTypeDefinition();
-
-                if (genericTypeDefinition == typeof(List<>))
-                {
-                    var elementType = propertyType.GetGenericArguments()[0];
-                    propertyType = typeof(IList<>).MakeGenericType(elementType);
-                }
-                else if (genericTypeDefinition == typeof(Dictionary<,>))
-                {
-                    var genericArgs = propertyType.GetGenericArguments();
-                    var keyType = genericArgs[0];
-                    var valueType = genericArgs[1];
-                    propertyType = typeof(IDictionary<,>).MakeGenericType(keyType, valueType);
-                }
+                methodGetByName.MakeGenericMethod(propertyType).Invoke(entity, [propertyName, propertyValue]);
             }
-
-            method.MakeGenericMethod(propertyType).Invoke(entity, [propertyName, propertyValue]);
+            else
+            {
+                methodGetByNameAndUnits.MakeGenericMethod(propertyType).Invoke(entity, [propertyName, propertyValue, new ForgeTypeId(attribute.UnitTypeId)]);
+            }
         }
 
         element.SetEntity(entity);
@@ -91,7 +95,7 @@ public sealed class DatabaseConnection<T>(Element element)
         }
 
         var properties = objType.GetProperties();
-        var method = typeof(Entity).GetMethods().FirstOrDefault(methodInfo =>
+        var methodSetByName = typeof(Entity).GetMethods().FirstOrDefault(methodInfo =>
         {
             if (methodInfo.Name != nameof(Entity.Get)) return false;
             var parameters = methodInfo.GetParameters();
@@ -99,34 +103,73 @@ public sealed class DatabaseConnection<T>(Element element)
                    parameters[0].ParameterType == typeof(string);
         })!;
 
+        var methodSetByNameAndUnits = typeof(Entity).GetMethods().FirstOrDefault(methodInfo =>
+        {
+            if (methodInfo.Name != nameof(Entity.Get)) return false;
+            var parameters = methodInfo.GetParameters();
+            return parameters.Length == 2 &&
+                   parameters[0].ParameterType == typeof(string) &&
+                   parameters[1].ParameterType == typeof(ForgeTypeId);
+        })!;
+
         foreach (var property in properties)
         {
-            var propertyType = property.PropertyType;
+            var propertyType = GetPropertyType(property);
 
-            if (propertyType.IsGenericType)
+            var attribute = property.GetCustomAttribute<UnitAttribute>();
+
+            if (attribute is null)
             {
-                if (propertyType.GetGenericTypeDefinition() == typeof(List<>))
-                {
-                    var elementType = propertyType.GetGenericArguments()[0];
-                    propertyType = typeof(IList<>).MakeGenericType(elementType);
-                }
-                else if (propertyType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
-                {
-                    var genericArgs = propertyType.GetGenericArguments();
-                    var keyType = genericArgs[0];
-                    var valueType = genericArgs[1];
-                    propertyType = typeof(IDictionary<,>).MakeGenericType(keyType, valueType);
-                }
+                var value = methodSetByName
+                    .MakeGenericMethod(propertyType)
+                    .Invoke(entity, [property.Name]);
+
+                property.SetValue(obj, value);
             }
 
-            var value = method
-                .MakeGenericMethod(propertyType)
-                .Invoke(entity, [property.Name]);
+            else
+            {
+                var value = methodSetByNameAndUnits
+                    .MakeGenericMethod(propertyType)
+                    .Invoke(entity, [property.Name, new ForgeTypeId(attribute.UnitTypeId)]);
 
-            property.SetValue(obj, value);
+                property.SetValue(obj, value);
+            }
         }
 
         return obj;
+    }
+
+    private static Type GetPropertyType(PropertyInfo property)
+    {
+        var propertyType = property.PropertyType;
+
+        if (propertyType.IsGenericType)
+        {
+            propertyType = GetGenericPropertyType(propertyType);
+        }
+
+        return propertyType;
+    }
+
+    private static Type GetGenericPropertyType(Type propertyType)
+    {
+        var genericTypeDefinition = propertyType.GetGenericTypeDefinition();
+
+        if (genericTypeDefinition == typeof(List<>))
+        {
+            var elementType = propertyType.GetGenericArguments()[0];
+            propertyType = typeof(IList<>).MakeGenericType(elementType);
+        }
+        else if (genericTypeDefinition == typeof(Dictionary<,>))
+        {
+            var genericArgs = propertyType.GetGenericArguments();
+            var keyType = genericArgs[0];
+            var valueType = genericArgs[1];
+            propertyType = typeof(IDictionary<,>).MakeGenericType(keyType, valueType);
+        }
+
+        return propertyType;
     }
 
     /// <summary>
@@ -166,12 +209,13 @@ public sealed class DatabaseConnection<T>(Element element)
     public void SaveProperty<TProperty>(string field, TProperty value)
     {
         if (value is null) return;
-        
+
         var entity = element.GetEntity(_schema);
         if (entity?.Schema is null || !entity.IsValidObject)
         {
             entity = new Entity(_schema);
         }
+
         entity.Set(field, value);
         element.SetEntity(entity);
     }

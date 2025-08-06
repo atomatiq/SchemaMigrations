@@ -1,7 +1,10 @@
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
+using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Events;
 using SchemaMigrations.Abstractions;
+using SchemaMigrations.Abstractions.Models;
 
 namespace SchemaMigrations.Database.Core;
 
@@ -67,24 +70,36 @@ internal static class SchemaMigrationUtils
                 if (genericTypeDefinition == typeof(List<>))
                 {
                     var elementType = propertyType.GetGenericArguments()[0];
-                    schemaBuilder.AddArrayField(field.Name, elementType);
+                    var fieldBuilder = schemaBuilder.AddArrayField(field.Name, elementType);
+                    AddUnitsIfNeeded(field, fieldBuilder);
                 }
                 else if (genericTypeDefinition == typeof(Dictionary<,>))
                 {
                     var genericArgs = propertyType.GetGenericArguments();
                     var keyType = genericArgs[0];
                     var valueType = genericArgs[1];
-                    schemaBuilder.AddMapField(field.Name, keyType, valueType);
+                    var fieldBuilder = schemaBuilder.AddMapField(field.Name, keyType, valueType);
+                    AddUnitsIfNeeded(field, fieldBuilder);
                 }
             }
             else
             {
-                schemaBuilder.AddSimpleField(field.Name, propertyType);
+                var fieldBuilder = schemaBuilder.AddSimpleField(field.Name, propertyType);
+                AddUnitsIfNeeded(field, fieldBuilder);
             }
         }
 
         var resultSchema = schemaBuilder.Finish();
         return resultSchema;
+    }
+
+    private static void AddUnitsIfNeeded(FieldDescriptor field, FieldBuilder fieldBuilder)
+    {
+        if (!string.IsNullOrWhiteSpace(field.SpecTypeId))
+        {
+            var forgeTypeId = new ForgeTypeId(field.SpecTypeId);
+            fieldBuilder.SetSpec(forgeTypeId);
+        }
     }
 
     private static void MigrateElement(Element element, Schema oldSchema, Schema newSchema)
