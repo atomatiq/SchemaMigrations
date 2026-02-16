@@ -13,12 +13,12 @@
 
         VersionMap = new()
         {
-            { "Release R21", "2021.0.5" },
-            { "Release R22", "2022.0.5" },
-            { "Release R23", "2023.0.5" },
-            { "Release R24", "2024.0.5" },
-            { "Release R25", "2025.0.5" },
-            { "Release R26", "2026.0.5" }
+            { "Release R21", "2021.0.6" },
+            { "Release R22", "2022.0.6" },
+            { "Release R23", "2023.0.6" },
+            { "Release R24", "2024.0.6" },
+            { "Release R25", "2025.0.6" },
+            { "Release R26", "2026.0.6" }
         };
         
         GeneratorVersion = "1.0.1";

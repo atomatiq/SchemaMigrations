@@ -1,16 +1,18 @@
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
-using Autodesk.Revit.UI;
-using Autodesk.Revit.UI.Events;
 using SchemaMigrations.Abstractions;
+using SchemaMigrations.Abstractions.Attributes;
 using SchemaMigrations.Abstractions.Models;
 
 namespace SchemaMigrations.Database.Core;
 
 internal static class SchemaMigrationUtils
 {
-    private static void MigrateSchema(Schema oldSchema, Schema newSchema, Document context)
+    private static void MigrateSchema(Schema oldSchema,
+        Schema newSchema,
+        Document context,
+        Type entityType)
     {
         var instances = new FilteredElementCollector(context)
             .WhereElementIsNotElementType()
@@ -20,18 +22,21 @@ internal static class SchemaMigrationUtils
             .ToArray();
         foreach (var instance in instances)
         {
-            MigrateElement(instance, oldSchema, newSchema);
+            MigrateElement(instance, oldSchema, newSchema, entityType);
         }
 
         foreach (var type in types)
         {
-            MigrateElement(type, oldSchema, newSchema);
+            MigrateElement(type, oldSchema, newSchema, entityType);
         }
 
         context.EraseSchemaAndAllEntities(oldSchema);
     }
 
-    internal static List<Schema> MigrateSchemas(Dictionary<string, Guid> lastExistedGuids, MigrationBuilder migrationBuilder, Document context)
+    internal static List<Schema> MigrateSchemas(Dictionary<string, Guid> lastExistedGuids,
+        MigrationBuilder migrationBuilder, 
+        Document context,
+        Type entityType)
     {
         var result = new List<Schema>();
         foreach (var guidPair in lastExistedGuids)
@@ -40,7 +45,7 @@ internal static class SchemaMigrationUtils
             var resultSchema = Create(guidPair.Key, migrationBuilder);
             if (existingSchema is not null && SchemaUtils.HasElements(existingSchema, context))
             {
-                MigrateSchema(existingSchema, resultSchema, context);
+                MigrateSchema(existingSchema, resultSchema, context, entityType);
             }
 
             result.Add(resultSchema);
@@ -102,7 +107,10 @@ internal static class SchemaMigrationUtils
         }
     }
 
-    private static void MigrateElement(Element element, Schema oldSchema, Schema newSchema)
+    private static void MigrateElement(Element element,
+        Schema oldSchema,
+        Schema newSchema,
+        Type entityType)
     {
         var firstEntity = element.GetEntity(oldSchema);
         if (firstEntity is null || firstEntity.Schema is null || !firstEntity.Schema.IsValidObject)
@@ -113,25 +121,71 @@ internal static class SchemaMigrationUtils
         var oldFields = oldSchema.ListFields();
         foreach (var field in oldFields)
         {
-            var getMethod = firstEntity.GetType().GetMethod(nameof(Entity.Get), [typeof(Field)])!;
-            var setMethod = secondEntity.GetType().GetMethods().FirstOrDefault(methodInfo =>
+            if (field.ValueType == typeof(double))
             {
-                if (methodInfo.Name != nameof(Entity.Set)) return false;
-                var parameters = methodInfo.GetParameters();
-                return parameters.Length == 2 &&
-                       parameters[0].ParameterType == typeof(string) &&
-                       parameters[1].ParameterType.IsGenericParameter;
-            })!;
-            var genericSetMethod = MakeGenericInvoker(field, setMethod);
-            var genericGetMethod = MakeGenericInvoker(field, getMethod);
-            var value = genericGetMethod.Invoke(firstEntity, [field]);
-            var newField = secondEntity.Schema.ListFields().FirstOrDefault(f => IsSimilar(f, field) );
-            if (newField is null) return;
-            genericSetMethod.Invoke(secondEntity, [field.FieldName, value]);
+                MigrateDoubleField(firstEntity, field, secondEntity, entityType);
+            }
+            else
+            {
+                MigrateCommonField(firstEntity, secondEntity, field);
+            }
+            
         }
 
         element.SetEntity(secondEntity);
         element.DeleteEntity(firstEntity.Schema);
+    }
+
+    private static void MigrateDoubleField(Entity firstEntity,
+        Field field, 
+        Entity secondEntity,
+        Type entityType)
+    {
+        var property = entityType.GetProperty(field.FieldName)!;
+        var attribute = property.GetCustomAttribute<UnitAttribute>()!;
+        var methodGetByNameAndUnits = typeof(Entity).GetMethods().FirstOrDefault(methodInfo =>
+        {
+            if (methodInfo.Name != nameof(Entity.Get)) return false;
+            var parameters = methodInfo.GetParameters();
+            return parameters.Length == 2 &&
+                   parameters[0].ParameterType == typeof(string) &&
+                   parameters[1].ParameterType == typeof(ForgeTypeId);
+        })!;
+        var methodSetByNameAndUnits = firstEntity.GetType()
+            .GetMethods().FirstOrDefault(methodInfo =>
+            {
+                if (methodInfo.Name != nameof(Entity.Set)) return false;
+                var parameters = methodInfo.GetParameters();
+                return parameters.Length == 3 &&
+                       parameters[0].ParameterType == typeof(string) &&
+                       parameters[1].ParameterType.IsGenericParameter &&
+                       parameters[2].ParameterType == typeof(ForgeTypeId);
+            })!;
+        var genericSetMethod = MakeGenericInvoker(field, methodSetByNameAndUnits);
+        var genericGetMethod = MakeGenericInvoker(field, methodGetByNameAndUnits);
+        var value = genericGetMethod.Invoke(firstEntity, [field.FieldName, new ForgeTypeId(attribute.UnitTypeId)]);
+        var newField = secondEntity.Schema.ListFields().FirstOrDefault(f => IsSimilar(f, field) );
+        if (newField is null) return;
+        genericSetMethod.Invoke(secondEntity, [field.FieldName, value, new ForgeTypeId(attribute.UnitTypeId)]);
+    }
+
+    private static void MigrateCommonField(Entity firstEntity, Entity secondEntity, Field field)
+    {
+        var getMethod = firstEntity.GetType().GetMethod(nameof(Entity.Get), [typeof(Field)])!;
+        var setMethod = secondEntity.GetType().GetMethods().FirstOrDefault(methodInfo =>
+        {
+            if (methodInfo.Name != nameof(Entity.Set)) return false;
+            var parameters = methodInfo.GetParameters();
+            return parameters.Length == 2 &&
+                   parameters[0].ParameterType == typeof(string) &&
+                   parameters[1].ParameterType.IsGenericParameter;
+        })!;
+        var genericSetMethod = MakeGenericInvoker(field, setMethod);
+        var genericGetMethod = MakeGenericInvoker(field, getMethod);
+        var value = genericGetMethod.Invoke(firstEntity, [field]);
+        var newField = secondEntity.Schema.ListFields().FirstOrDefault(f => IsSimilar(f, field) );
+        if (newField is null) return;
+        genericSetMethod.Invoke(secondEntity, [field.FieldName, value]);
     }
 
     private static bool IsSimilar(Field field, Field other)

@@ -45,6 +45,14 @@ public class MigrationBuilder
     }
 
     /// <summary>
+    /// Method created inside the migration to add new field with the type of double to the schema
+    /// </summary>
+    public void AddColumn(string schemaName, string name, Type fieldType, string specTypeId, string unitTypeId)
+    {
+        Schemas.First(schema => schema.SchemaName == schemaName).AddField(new FieldDescriptor(name, fieldType, specTypeId, unitTypeId));
+    }
+
+    /// <summary>
     /// Method created inside the migration to remove a field from the schema
     /// </summary>
     public void DropColumn(string schemaName, string name)

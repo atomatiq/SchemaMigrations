@@ -20,3 +20,7 @@
 # Release 2026.0.5
 
 - Add support for doubles and units
+
+# Release 2026.0.6
+
+- Fix migration bug for doubles and units

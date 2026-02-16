@@ -8,7 +8,7 @@ using SchemaMigrations.Database.Core;
 namespace SchemaMigrations.Database.Schemas;
 
 [UsedImplicitly]
-internal class Schema<T> where T : class
+internal class Schema<T> where T : class, new()
 {
     internal static Schema Create(Element element)
     {
@@ -54,7 +54,9 @@ internal class Schema<T> where T : class
             return SchemaMigrationUtils.Create(schemaName, migrationBuilder);
         }
 
-        var schemas = SchemaMigrationUtils.MigrateSchemas(lastExistedGuidDictionary, migrationBuilder, element.Document); //it will migrate all the schemas
+        var objType = typeof(T);
+        
+        var schemas = SchemaMigrationUtils.MigrateSchemas(lastExistedGuidDictionary, migrationBuilder, element.Document, objType); //it will migrate all the schemas
         return schemas.Find(migratedSchema => migratedSchema.SchemaName == schemaName)!;
     }
 

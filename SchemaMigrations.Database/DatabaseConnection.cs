@@ -95,7 +95,7 @@ public sealed class DatabaseConnection<T>(Element element)
         }
 
         var properties = objType.GetProperties();
-        var methodSetByName = typeof(Entity).GetMethods().FirstOrDefault(methodInfo =>
+        var methodGetByName = typeof(Entity).GetMethods().FirstOrDefault(methodInfo =>
         {
             if (methodInfo.Name != nameof(Entity.Get)) return false;
             var parameters = methodInfo.GetParameters();
@@ -103,7 +103,7 @@ public sealed class DatabaseConnection<T>(Element element)
                    parameters[0].ParameterType == typeof(string);
         })!;
 
-        var methodSetByNameAndUnits = typeof(Entity).GetMethods().FirstOrDefault(methodInfo =>
+        var methodGetByNameAndUnits = typeof(Entity).GetMethods().FirstOrDefault(methodInfo =>
         {
             if (methodInfo.Name != nameof(Entity.Get)) return false;
             var parameters = methodInfo.GetParameters();
@@ -120,7 +120,7 @@ public sealed class DatabaseConnection<T>(Element element)
 
             if (attribute is null)
             {
-                var value = methodSetByName
+                var value = methodGetByName
                     .MakeGenericMethod(propertyType)
                     .Invoke(entity, [property.Name]);
 
@@ -129,7 +129,7 @@ public sealed class DatabaseConnection<T>(Element element)
 
             else
             {
-                var value = methodSetByNameAndUnits
+                var value = methodGetByNameAndUnits
                     .MakeGenericMethod(propertyType)
                     .Invoke(entity, [property.Name, new ForgeTypeId(attribute.UnitTypeId)]);
 
