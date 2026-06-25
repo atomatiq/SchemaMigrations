@@ -18,7 +18,8 @@
             { "Release R23", "2023.0.6" },
             { "Release R24", "2024.0.6" },
             { "Release R25", "2025.0.6" },
-            { "Release R26", "2026.0.6" }
+            { "Release R26", "2026.0.6" },
+            { "Release R27", "2027.0.0" }
         };
         
         GeneratorVersion = "1.0.1";

@@ -24,3 +24,7 @@
 # Release 2026.0.6
 
 - Fix migration bug for doubles and units
+
+# Release 2027.0.0
+
+- Add support for Revit 2027
